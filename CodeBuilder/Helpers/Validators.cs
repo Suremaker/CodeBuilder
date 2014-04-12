@@ -22,10 +22,21 @@ namespace CodeBuilder.Helpers
             return arg;
         }
 
-        public static void AssignableCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
+        public static void HierarchyCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
         {
             NullCheck(actual, paramName);
+            //value types have to be boxed or converted explicitly
+            if ((actual.IsValueType || toType.IsValueType) && actual != toType)
+                throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
+
             if (!toType.IsAssignableFrom(actual))
+                throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
+        }
+
+        public static void ConversionCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
+        {
+            NullCheck(actual, paramName);
+            if (!toType.IsAssignableFrom(actual) && !actual.IsAssignableFrom(toType))
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
         }
 
@@ -43,10 +54,8 @@ namespace CodeBuilder.Helpers
 
             for (int i = 0; i < expected.Length; ++i)
             {
-                if (actual[i] == null)
-                    throw new ArgumentNullException(string.Format("values[{0}]", i));
-                if (!expected[i].ParameterType.IsAssignableFrom(actual[i].ExpressionType))
-                    throw new ArgumentException(string.Format("Parameter expression {0} of type {1} does not match to type: {2}", i, actual[i].ExpressionType, expected[i].ParameterType), paramName);
+                NullCheck(actual[i], string.Format("{0}[{1}]", paramName, i));
+                HierarchyCheck(actual[i].ExpressionType, expected[i].ParameterType, "Parameter expression of type {0} does not match to type: {1}",string.Format("{0}[{1}]",paramName,i));
             }
         }
     }

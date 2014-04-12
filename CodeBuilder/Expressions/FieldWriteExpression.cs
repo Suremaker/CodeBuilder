@@ -18,9 +18,9 @@ namespace CodeBuilder.Expressions
             if (!fieldInfo.IsStatic)
             {
                 Validators.NullCheck(instance, "instance");
-                Validators.AssignableCheck(instance.ExpressionType, fieldInfo.DeclaringType, "Instance expression of type {0} does not match to type: {1}", "instance");
+                Validators.HierarchyCheck(instance.ExpressionType, fieldInfo.DeclaringType, "Instance expression of type {0} does not match to type: {1}", "instance");
             }
-            Validators.AssignableCheck(value.ExpressionType, fieldInfo.FieldType, "Value expression of type {0} does not match to type: {1}", "value");
+            Validators.HierarchyCheck(value.ExpressionType, fieldInfo.FieldType, "Value expression of type {0} does not match to type: {1}", "value");
 
             _instance = instance;
             _fieldInfo = fieldInfo;

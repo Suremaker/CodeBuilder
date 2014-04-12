@@ -35,7 +35,7 @@ namespace CodeBuilder.Expressions
 
         private void ValidateReturnType(IBuildContext ctx)
         {
-            Validators.AssignableCheck(ReturnType, ctx.ReturnType, "Method return type is {0}, while return statement is returning {1}", "ReturnType");
+            Validators.HierarchyCheck(ReturnType, ctx.ReturnType, "Method return type is {0}, while return statement is returning {1}", "ReturnType");
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

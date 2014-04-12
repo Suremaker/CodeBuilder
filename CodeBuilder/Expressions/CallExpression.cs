@@ -19,7 +19,7 @@ namespace CodeBuilder.Expressions
             if (!methodInfo.IsStatic)
                 Validators.NullCheck(instance, "instance");
             if (instance != null)
-                Validators.AssignableCheck(methodInfo.DeclaringType, instance.ExpressionType, "Instance expression of type {0} does not match to type: {1}", "instance");
+                Validators.HierarchyCheck(methodInfo.DeclaringType, instance.ExpressionType, "Instance expression of type {0} does not match to type: {1}", "instance");
 
             Validators.ParameterCheck(methodInfo, arguments, "arguments");
 

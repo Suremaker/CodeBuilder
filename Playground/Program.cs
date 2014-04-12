@@ -56,14 +56,16 @@ namespace Playground
 
             builder.AddStatements(
                 Expr.Return(
-                Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Result: {0}"), 
-                Expr.IfThenElse(
-                    Expr.Parameter(1, typeof(string)),
-                    Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Date: {0}"), Expr.Convert(Expr.Parameter(1, typeof(string)), typeof(object))),
-                    Expr.Constant("Undefined!")))));
+                Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object),typeof(object) }), Expr.Constant("Result: {0}-{1}"), 
+                    Expr.IfThenElse(
+                        Expr.Parameter(1, typeof(string)),
+                        Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Date: {0}"), Expr.Convert(Expr.Parameter(1, typeof(string)), typeof(object))),
+                        Expr.Constant("Undefined!")),
+                Expr.Convert(Expr.Convert(Expr.Convert(Expr.Constant(16), typeof(object)), typeof(int)),typeof(object)))
+                ));
             
             Console.WriteLine(builder.ToString());
-
+            
             builder.Compile();
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
