@@ -33,6 +33,7 @@ namespace Playground
             mb.DefineParameter(1, ParameterAttributes.None, "val");
             builder = new MethodBodyBuilder(mb, typeof(int));
             builder.AddStatements(
+                Expr.IfThen(Expr.Parameter(1,typeof(int)),Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string)}),Expr.Constant("aha!"))),
                 Expr.Return(Expr.Call(
                     Expr.Call(
                         Expr.New(typeof(StringBuilder)),
@@ -42,6 +43,27 @@ namespace Playground
                         Expr.Convert(Expr.Parameter(1, typeof(int)), typeof(object))),
                     typeof(StringBuilder).GetMethod("ToString", new Type[0]))));
             Console.WriteLine(builder.ToString());
+
+            builder.Compile();
+
+
+            mb = typeBuilder.DefineMethod("bar", MethodAttributes.Public);
+            mb.SetReturnType(typeof(string));
+            mb.SetParameters(typeof(string));
+            mb.DefineParameter(1, ParameterAttributes.None, "date");
+
+            builder = new MethodBodyBuilder(mb, typeof(string));
+
+            builder.AddStatements(
+                Expr.Return(
+                Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Result: {0}"), 
+                Expr.IfThenElse(
+                    Expr.Parameter(1, typeof(string)),
+                    Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Date: {0}"), Expr.Convert(Expr.Parameter(1, typeof(string)), typeof(object))),
+                    Expr.Constant("Undefined!")))));
+            
+            Console.WriteLine(builder.ToString());
+
             builder.Compile();
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);

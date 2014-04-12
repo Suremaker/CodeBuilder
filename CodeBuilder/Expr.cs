@@ -28,5 +28,24 @@ namespace CodeBuilder
         public static ParameterExpression Parameter(ushort parameterId, Type type) { return new ParameterExpression(parameterId, type); }
 
         public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertExpression(expression, type); }
+
+        /// <summary>
+        /// IfThen expression is always Void type.
+        /// It will use Pop if then expression is not Void.
+        /// </summary>
+        /// <param name="predicate">If non-zero or not-null, then expression would be executed</param>
+        /// <param name="thenExpression"></param>
+        /// <returns></returns>
+        public static IfThenExpression IfThen(Expression predicate,Expression thenExpression) { return new IfThenExpression(predicate,thenExpression);}
+        /// <summary>
+        /// IfThenElse expression is of thenExpression type.
+        /// ThenExpression and elseExpression have to be of the same type.
+        /// It is an equivalent of ?: operator
+        /// </summary>
+        /// <param name="predicate">If non-zero or not-null, then expression would be executed, otherwise elseExpression would be executed.</param>
+        /// <param name="thenExpression"></param>
+        /// <param name="elseExpression"></param>
+        /// <returns></returns>
+        public static IfThenElseExpression IfThenElse(Expression predicate,Expression thenExpression,Expression elseExpression) { return new IfThenElseExpression(predicate,thenExpression,elseExpression);}
     }
 }

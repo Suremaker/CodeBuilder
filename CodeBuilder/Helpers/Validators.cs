@@ -15,10 +15,11 @@ namespace CodeBuilder.Helpers
                     throw new ArgumentNullException(string.Format("{0}[{1}]", paramName, i));
         }
 
-        public static void NullCheck<T>(T arg, string paramName) where T : class
+        public static T NullCheck<T>(T arg, string paramName) where T : class
         {
             if (arg == null)
                 throw new ArgumentNullException(paramName);
+            return arg;
         }
 
         public static void AssignableCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
@@ -26,6 +27,12 @@ namespace CodeBuilder.Helpers
             NullCheck(actual, paramName);
             if (!toType.IsAssignableFrom(actual))
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
+        }
+
+        public static void PrimitiveOrClassCheck(Type type, string paramName)
+        {
+            if (!type.IsPrimitive && !type.IsClass)
+                throw new ArgumentException(string.Format("Expected expression type to be primitive or class, got: {0}", type), paramName);
         }
 
         public static void ParameterCheck(MethodBase methodInfo, Expression[] actual, string paramName)

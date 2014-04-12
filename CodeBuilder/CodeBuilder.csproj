@@ -44,10 +44,12 @@
     <Compile Include="Expr.cs" />
     <Compile Include="Expressions\FieldReadExpression.cs" />
     <Compile Include="Expressions\FieldWriteExpression.cs" />
+    <Compile Include="Expressions\IfThenElseExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="IBuildContext.cs" />
+    <Compile Include="Expressions\IfThenExpression.cs" />
     <Compile Include="MethodBodyBuilder.cs" />
     <Compile Include="Expressions\NewExpression.cs" />
     <Compile Include="Expressions\ParameterExpression.cs" />
