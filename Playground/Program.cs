@@ -50,7 +50,7 @@ namespace Playground
             mb = typeBuilder.DefineMethod("bar", MethodAttributes.Public);
             mb.SetReturnType(typeof(string));
             mb.SetParameters(typeof(string));
-            mb.DefineParameter(1, ParameterAttributes.None, "date");
+            mb.DefineParameter(1, ParameterAttributes.None, "text");
 
             builder = new MethodBodyBuilder(mb, typeof(string));
 
@@ -66,6 +66,28 @@ namespace Playground
             
             Console.WriteLine(builder.ToString());
             
+            builder.Compile();
+
+
+            mb = typeBuilder.DefineMethod("tryFinally", MethodAttributes.Public);
+            mb.SetParameters(typeof(string));
+            mb.SetReturnType(typeof(void));
+            mb.DefineParameter(1, ParameterAttributes.None, "value");
+
+            builder = new MethodBodyBuilder(mb, typeof(string));
+
+            builder.AddStatements(
+                Expr.TryFinally(
+                    Expr.IfThenElse(Expr.Parameter(1, typeof (string)),
+                                    Expr.Call(typeof (Console).GetMethod("WriteLine", new[] {typeof (string)}),
+                                              Expr.Parameter(1, typeof (string))),
+                                    Expr.Throw(Expr.New(typeof (Exception), Expr.Constant("No string provided!")))
+                        ),
+                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }),Expr.Constant("finally!")))
+                );
+
+            Console.WriteLine(builder.ToString());
+
             builder.Compile();
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);

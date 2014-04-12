@@ -28,6 +28,9 @@ namespace CodeBuilder
         public static ParameterExpression Parameter(ushort parameterId, Type type) { return new ParameterExpression(parameterId, type); }
 
         public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertExpression(expression, type); }
+        public static ThrowExpression Throw(Expression exceptionExpression) { return new ThrowExpression(exceptionExpression); }
+        public static RethrowExpression Rethrow() { return new RethrowExpression(); }
+        public static TryFinallyExpression TryFinally(Expression tryExpression,Expression finallyExpression) { return new TryFinallyExpression(tryExpression,finallyExpression); }
 
         /// <summary>
         /// IfThen expression is always Void type.

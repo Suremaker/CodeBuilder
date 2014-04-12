@@ -45,6 +45,9 @@
     <Compile Include="Expressions\FieldReadExpression.cs" />
     <Compile Include="Expressions\FieldWriteExpression.cs" />
     <Compile Include="Expressions\IfThenElseExpression.cs" />
+    <Compile Include="Expressions\RethrowExpression.cs" />
+    <Compile Include="Expressions\ThrowExpression.cs" />
+    <Compile Include="Expressions\TryFinallyExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
