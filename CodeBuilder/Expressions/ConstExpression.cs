@@ -1,5 +1,7 @@
-﻿using System.Reflection.Emit;
+﻿using System;
+using System.Reflection.Emit;
 using System.Text;
+using CodeBuilder.Context;
 
 namespace CodeBuilder.Expressions
 {
@@ -42,6 +44,17 @@ namespace CodeBuilder.Expressions
         {
             _value = value;
             _action = CompileStr;
+        }
+
+        public ConstExpression(Type value) : base(typeof(Type))
+        {
+            _value = value;
+            _action = CompileType;
+        }
+
+        private void CompileType(IBuildContext ctx)
+        {
+            ctx.Generator.Emit(OpCodes.Ldtoken, (Type)_value);
         }
 
         private void CompileStr(IBuildContext ctx)

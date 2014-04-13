@@ -1,7 +1,7 @@
 using System;
 using System.Reflection.Emit;
 
-namespace CodeBuilder
+namespace CodeBuilder.Context
 {
     public interface IBuildContext
     {
@@ -19,5 +19,8 @@ namespace CodeBuilder
         LocalBuilder GetLocalIndex(LocalVariable variable);
         void SetCatchBlock(Label label);
         void ResetCatchBlock(Label label);
+        void SetLoopData(LoopData data);
+        void ResetLoopData(LoopData data);
+        LoopData GetLoopData();
     }
 }

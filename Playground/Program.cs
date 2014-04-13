@@ -46,7 +46,6 @@ namespace Playground
 
             builder.Compile();
 
-
             mb = typeBuilder.DefineMethod("bar", MethodAttributes.Public);
             mb.SetReturnType(typeof(string));
             mb.SetParameters(typeof(string));
@@ -133,6 +132,20 @@ namespace Playground
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
+            mb = typeBuilder.DefineMethod("loop", MethodAttributes.Public);
+            mb.SetReturnType(typeof(void));
+
+
+            var iVar = Expr.DeclareLocalVar(typeof(int), "i");
+            builder = new MethodBodyBuilder(mb);
+            builder.AddStatements(
+                Expr.WriteLocal(iVar,Expr.Constant(0)),
+                Expr.Loop(Expr.IfThenElse(Expr.ReadLocal(iVar),Expr.LoopContinue(),Expr.LoopBreak()))
+                );
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+            
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

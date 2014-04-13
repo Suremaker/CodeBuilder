@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Emit;
 
-namespace CodeBuilder
+namespace CodeBuilder.Context
 {
     class BuildContext : IBuildContext
     {
         private readonly Stack<Label> _exceptionBlocks = new Stack<Label>();
         private readonly Stack<Label> _finallyBlocks = new Stack<Label>();
         private readonly Stack<Label> _catchBlocks = new Stack<Label>();
+        private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
         private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
         public BuildContext(ILGenerator generator, Type returnType, Type[] parameters)
         {
@@ -37,16 +38,12 @@ namespace CodeBuilder
 
         public void ResetFinallyBlock(Label label)
         {
-            if (_finallyBlocks.Peek() != label)
-                throw new InvalidOperationException("Trying to reset finally block for wrong label!");
-            _finallyBlocks.Pop();
+            Reset(_finallyBlocks, label, "Trying to reset finally block for wrong label!");
         }
 
         public void ResetExceptionBlock(Label label)
         {
-            if (_exceptionBlocks.Peek() != label)
-                throw new InvalidOperationException("Trying to reset exception block for wrong label!");
-            _exceptionBlocks.Pop();
+            Reset(_exceptionBlocks, label, "Trying to reset exception block for wrong label!");
         }
 
         public LocalBuilder GetOrDeclareLocalIndex(LocalVariable variable)
@@ -86,9 +83,31 @@ namespace CodeBuilder
 
         public void ResetCatchBlock(Label label)
         {
-            if (_catchBlocks.Peek() != label)
-                throw new InvalidOperationException("Trying to reset catch block for wrong label!");
-            _catchBlocks.Pop();
+            Reset(_catchBlocks, label, "Trying to reset catch block for wrong label!");
+        }
+
+        public void SetLoopData(LoopData data)
+        {
+            _loopData.Push(data);
+        }
+
+        public void ResetLoopData(LoopData data)
+        {
+            Reset(_loopData, data, "Trying to reset loop data for wrong loop!");
+        }
+
+        public LoopData GetLoopData()
+        {
+            return (_loopData.Count > 0) ? _loopData.Peek() : null;
+        }
+
+        private void Reset<T>(Stack<T> stack, T value, string errorMessage)
+        {
+            var actual = (stack.Count > 0) ? stack.Peek() : default(T);
+
+            if (!Equals(actual, value))
+                throw new InvalidOperationException(errorMessage);
+            stack.Pop();
         }
     }
 }

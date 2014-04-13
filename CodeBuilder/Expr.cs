@@ -9,6 +9,10 @@ namespace CodeBuilder
     {
         public static ConstExpression Constant(string value) { return new ConstExpression(value); }
         public static ConstExpression Constant(int value) { return new ConstExpression(value); }
+        public static ConstExpression Constant(long value) { return new ConstExpression(value); }
+        public static ConstExpression Constant(float value) { return new ConstExpression(value); }
+        public static ConstExpression Constant(double value) { return new ConstExpression(value); }
+        public static ConstExpression Constant(Type value) { return new ConstExpression(value); }
 
         public static FieldWriteExpression FieldWrite(FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(null, fieldInfo, value); }
         public static FieldWriteExpression FieldWrite(Expression instance, FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(instance, fieldInfo, value); }
@@ -65,5 +69,9 @@ namespace CodeBuilder
         /// Returns -value
         /// </summary>
         public static NegateExpression Negate(Expression value) { return new NegateExpression(value); }
+
+        public static LoopExpression Loop(Expression loop) { return new LoopExpression(loop); }
+        public static LoopBreakExpression LoopBreak() { return new LoopBreakExpression(); }
+        public static LoopContinueExpression LoopContinue() { return new LoopContinueExpression(); }
     }
 }

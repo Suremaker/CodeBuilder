@@ -36,8 +36,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuildContext.cs" />
     <Compile Include="CatchBlock.cs" />
+    <Compile Include="Context\BuildContext.cs" />
+    <Compile Include="Context\IBuildContext.cs" />
+    <Compile Include="Context\LoopData.cs" />
     <Compile Include="Expressions\CallExpression.cs" />
     <Compile Include="Expressions\ConvertExpression.cs" />
     <Compile Include="Expressions\EmptyExpression.cs" />
@@ -49,6 +51,9 @@
     <Compile Include="Expressions\IfThenElseExpression.cs" />
     <Compile Include="Expressions\LocalReadExpression.cs" />
     <Compile Include="Expressions\LocalWriteExpression.cs" />
+    <Compile Include="Expressions\LoopBreakExpression.cs" />
+    <Compile Include="Expressions\LoopContinueExpression.cs" />
+    <Compile Include="Expressions\LoopExpression.cs" />
     <Compile Include="Expressions\NegateExpression.cs" />
     <Compile Include="Expressions\NotExpression.cs" />
     <Compile Include="Expressions\RethrowExpression.cs" />
@@ -59,7 +64,6 @@
     <Compile Include="Helpers\ExprHelper.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
-    <Compile Include="IBuildContext.cs" />
     <Compile Include="Expressions\IfThenExpression.cs" />
     <Compile Include="LocalVariable.cs" />
     <Compile Include="MethodBodyBuilder.cs" />

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
 namespace CodeBuilder.Expressions
