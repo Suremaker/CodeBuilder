@@ -88,6 +88,26 @@ namespace Playground
             builder.Compile();
 
 
+            mb = typeBuilder.DefineMethod("tryCatchFinally", MethodAttributes.Public);
+            mb.SetParameters(typeof(string));
+            mb.SetReturnType(typeof(void));
+            mb.DefineParameter(1, ParameterAttributes.None, "value");
+
+            builder = new MethodBodyBuilder(mb, typeof(string));
+            var loc1 = Expr.DeclareLocalVar(typeof(Exception), "e");
+            builder.AddStatements(
+                Expr.TryCatchFinally(
+                    Expr.IfThenElse(Expr.Parameter(1, typeof(string)),
+                                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Parameter(1, typeof(string))),
+                                    Expr.Throw(Expr.New(typeof(ArgumentNullException), Expr.Constant("No string provided!")))),
+                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("finally!")),
+                    new CatchBlock(typeof(ArgumentNullException), loc1, Expr.Rethrow())
+                    ));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
+
             mb = typeBuilder.DefineMethod("localVar", MethodAttributes.Public);
             mb.SetReturnType(typeof(void));
 

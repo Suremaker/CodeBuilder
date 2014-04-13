@@ -9,6 +9,7 @@ namespace CodeBuilder
     {
         private readonly Stack<Label> _exceptionBlocks = new Stack<Label>();
         private readonly Stack<Label> _finallyBlocks = new Stack<Label>();
+        private readonly Stack<Label> _catchBlocks = new Stack<Label>();
         private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
         public BuildContext(ILGenerator generator, Type returnType, Type[] parameters)
         {
@@ -22,7 +23,7 @@ namespace CodeBuilder
         public ILGenerator Generator { get; private set; }
         public bool IsInExceptionBlock { get { return _exceptionBlocks.Count > 0; } }
         public bool IsInFinallyBlock { get { return _finallyBlocks.Count > 0; } }
-        public bool IsInCatchBlock { get { return false; } }
+        public bool IsInCatchBlock { get { return _catchBlocks.Count > 0; } }
 
         public void SetExceptionBlock(Label label)
         {
@@ -76,6 +77,18 @@ namespace CodeBuilder
             if (_localVars.TryGetValue(variable, out value))
                 return value;
             throw new IOException(string.Format("Uninitialized local variable access: {0}", variable));
+        }
+
+        public void SetCatchBlock(Label label)
+        {
+            _catchBlocks.Push(label);
+        }
+
+        public void ResetCatchBlock(Label label)
+        {
+            if (_catchBlocks.Peek() != label)
+                throw new InvalidOperationException("Trying to reset catch block for wrong label!");
+            _catchBlocks.Pop();
         }
     }
 }

@@ -15,8 +15,8 @@ namespace CodeBuilder
 
         public MethodBodyBuilder(MethodBuilder methodBuilder, params Type[] parameters)
         {
-            Validators.NullCheck(methodBuilder,"methodBuilder");
-            Validators.NullCollectionElementsCheck(parameters,"parameters");
+            Validators.NullCheck(methodBuilder, "methodBuilder");
+            Validators.NullCollectionElementsCheck(parameters, "parameters");
             _ctx = new BuildContext(methodBuilder.GetILGenerator(), methodBuilder.ReturnType, PrepareParameters(methodBuilder, parameters));
         }
 
@@ -43,7 +43,7 @@ namespace CodeBuilder
             if (expression == null)
                 throw new ArgumentNullException("expression");
 
-            _statements.Add((expression.ExpressionType != typeof(void)) ? Expr.Pop(expression) : expression);
+            _statements.Add(ExprHelper.PopIfNeeded(expression));
             return this;
         }
 

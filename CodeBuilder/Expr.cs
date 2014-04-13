@@ -30,7 +30,10 @@ namespace CodeBuilder
         public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertExpression(expression, type); }
         public static ThrowExpression Throw(Expression exceptionExpression) { return new ThrowExpression(exceptionExpression); }
         public static RethrowExpression Rethrow() { return new RethrowExpression(); }
-        public static TryFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression) { return new TryFinallyExpression(tryExpression, finallyExpression); }
+        public static TryCatchFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression) { return new TryCatchFinallyExpression(tryExpression, finallyExpression); }
+        public static TryCatchFinallyExpression TryCatchFinally(Expression tryExpression, Expression finallyExpression, params CatchBlock[] catchBlocks) { return new TryCatchFinallyExpression(tryExpression, finallyExpression, catchBlocks); }
+        public static TryCatchFinallyExpression TryCatch(Expression tryExpression, params CatchBlock[] catchBlocks) { return new TryCatchFinallyExpression(tryExpression, null, catchBlocks); }
+
         public static LocalVariable DeclareLocalVar(Type variableType, string name) { return new LocalVariable(variableType, name); }
         public static LocalWriteExpression WriteLocal(LocalVariable variable, Expression value) { return new LocalWriteExpression(variable, value); }
         public static LocalReadExpression ReadLocal(LocalVariable variable) { return new LocalReadExpression(variable); }
@@ -52,5 +55,7 @@ namespace CodeBuilder
         /// <param name="elseExpression"></param>
         /// <returns></returns>
         public static IfThenElseExpression IfThenElse(Expression predicate, Expression thenExpression, Expression elseExpression) { return new IfThenElseExpression(predicate, thenExpression, elseExpression); }
+
+        public static EmptyExpression Empty() { return new EmptyExpression(); }
     }
 }

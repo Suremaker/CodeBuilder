@@ -15,7 +15,7 @@ namespace Reflector
             Console.WriteLine(myClass.bar("abc"));
 
             myClass.tryFinally("abc");
-            try { myClass.tryFinally(null); }
+            try { myClass.tryCatchFinally(null); }
             catch (Exception e) { Console.WriteLine(e);}
 
             myClass.localVar();

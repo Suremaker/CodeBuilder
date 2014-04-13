@@ -15,7 +15,7 @@ namespace CodeBuilder.Expressions
             Validators.NullCheck(thenExpression, "thenExpression");
             Validators.PrimitiveOrClassCheck(predicate.ExpressionType, "predicate");
             _predicate = predicate;
-            _thenExpression = (thenExpression.ExpressionType != typeof(void)) ? Expr.Pop(thenExpression) : thenExpression;
+            _thenExpression = ExprHelper.PopIfNeeded(thenExpression);
         }
 
         internal override void Compile(IBuildContext ctx)

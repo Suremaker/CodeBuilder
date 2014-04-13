@@ -17,5 +17,7 @@ namespace CodeBuilder
         void ResetExceptionBlock(Label label);
         LocalBuilder GetOrDeclareLocalIndex(LocalVariable variable);
         LocalBuilder GetLocalIndex(LocalVariable variable);
+        void SetCatchBlock(Label label);
+        void ResetCatchBlock(Label label);
     }
 }
