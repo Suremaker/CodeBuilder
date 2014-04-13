@@ -33,7 +33,12 @@ namespace CodeBuilder.Expressions
 
         private void CompileInt(IBuildContext ctx)
         {
-            ctx.Generator.Emit(_opCode, (int)_value);
+            if (_opCode == OpCodes.Ldc_I4_S)
+                ctx.Generator.Emit(_opCode, (sbyte)(int)_value);
+            else if(_opCode == OpCodes.Ldc_I4)
+                ctx.Generator.Emit(_opCode, (int)_value);
+            else
+                ctx.Generator.Emit(_opCode);
         }
 
         private OpCode FindIntOpCode(int value)
