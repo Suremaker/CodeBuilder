@@ -30,8 +30,10 @@ namespace CodeBuilder
         public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertExpression(expression, type); }
         public static ThrowExpression Throw(Expression exceptionExpression) { return new ThrowExpression(exceptionExpression); }
         public static RethrowExpression Rethrow() { return new RethrowExpression(); }
-        public static TryFinallyExpression TryFinally(Expression tryExpression,Expression finallyExpression) { return new TryFinallyExpression(tryExpression,finallyExpression); }
-
+        public static TryFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression) { return new TryFinallyExpression(tryExpression, finallyExpression); }
+        public static LocalVariable DeclareLocalVar(Type variableType, string name) { return new LocalVariable(variableType, name); }
+        public static LocalWriteExpression WriteLocal(LocalVariable variable, Expression value) { return new LocalWriteExpression(variable, value); }
+        public static LocalReadExpression ReadLocal(LocalVariable variable) { return new LocalReadExpression(variable); }
         /// <summary>
         /// IfThen expression is always Void type.
         /// It will use Pop if then expression is not Void.
@@ -39,7 +41,7 @@ namespace CodeBuilder
         /// <param name="predicate">If non-zero or not-null, then expression would be executed</param>
         /// <param name="thenExpression"></param>
         /// <returns></returns>
-        public static IfThenExpression IfThen(Expression predicate,Expression thenExpression) { return new IfThenExpression(predicate,thenExpression);}
+        public static IfThenExpression IfThen(Expression predicate, Expression thenExpression) { return new IfThenExpression(predicate, thenExpression); }
         /// <summary>
         /// IfThenElse expression is of thenExpression type.
         /// ThenExpression and elseExpression have to be of the same type.
@@ -49,6 +51,6 @@ namespace CodeBuilder
         /// <param name="thenExpression"></param>
         /// <param name="elseExpression"></param>
         /// <returns></returns>
-        public static IfThenElseExpression IfThenElse(Expression predicate,Expression thenExpression,Expression elseExpression) { return new IfThenElseExpression(predicate,thenExpression,elseExpression);}
+        public static IfThenElseExpression IfThenElse(Expression predicate, Expression thenExpression, Expression elseExpression) { return new IfThenElseExpression(predicate, thenExpression, elseExpression); }
     }
 }

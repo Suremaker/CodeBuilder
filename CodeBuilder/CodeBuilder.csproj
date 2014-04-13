@@ -45,6 +45,8 @@
     <Compile Include="Expressions\FieldReadExpression.cs" />
     <Compile Include="Expressions\FieldWriteExpression.cs" />
     <Compile Include="Expressions\IfThenElseExpression.cs" />
+    <Compile Include="Expressions\LocalReadExpression.cs" />
+    <Compile Include="Expressions\LocalWriteExpression.cs" />
     <Compile Include="Expressions\RethrowExpression.cs" />
     <Compile Include="Expressions\ThrowExpression.cs" />
     <Compile Include="Expressions\TryFinallyExpression.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="IBuildContext.cs" />
     <Compile Include="Expressions\IfThenExpression.cs" />
+    <Compile Include="LocalVariable.cs" />
     <Compile Include="MethodBodyBuilder.cs" />
     <Compile Include="Expressions\NewExpression.cs" />
     <Compile Include="Expressions\ParameterExpression.cs" />

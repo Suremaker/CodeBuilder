@@ -17,6 +17,8 @@ namespace Reflector
             myClass.tryFinally("abc");
             try { myClass.tryFinally(null); }
             catch (Exception e) { Console.WriteLine(e);}
+
+            myClass.localVar();
             Console.ReadKey();
         }
     }

@@ -23,7 +23,7 @@ namespace Playground
                 Expr.FieldWrite(fieldBuilder, Expr.Constant("abc")),
                 Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("Hello my friend!")),
                 Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string), typeof(object) }), Expr.Constant("What a {0} day!"), Expr.Constant("beautiful")),
-                Expr.Call(typeof(Console).GetMethod("ReadKey",new Type[0])));
+                Expr.Call(typeof(Console).GetMethod("ReadKey", new Type[0])));
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
@@ -33,7 +33,7 @@ namespace Playground
             mb.DefineParameter(1, ParameterAttributes.None, "val");
             builder = new MethodBodyBuilder(mb, typeof(int));
             builder.AddStatements(
-                Expr.IfThen(Expr.Parameter(1,typeof(int)),Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string)}),Expr.Constant("aha!"))),
+                Expr.IfThen(Expr.Parameter(1, typeof(int)), Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("aha!"))),
                 Expr.Return(Expr.Call(
                     Expr.Call(
                         Expr.New(typeof(StringBuilder)),
@@ -56,16 +56,16 @@ namespace Playground
 
             builder.AddStatements(
                 Expr.Return(
-                Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object),typeof(object) }), Expr.Constant("Result: {0}-{1}"), 
+                Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object), typeof(object) }), Expr.Constant("Result: {0}-{1}"),
                     Expr.IfThenElse(
                         Expr.Parameter(1, typeof(string)),
                         Expr.Call(typeof(string).GetMethod("Format", new[] { typeof(string), typeof(object) }), Expr.Constant("Date: {0}"), Expr.Convert(Expr.Parameter(1, typeof(string)), typeof(object))),
                         Expr.Constant("Undefined!")),
-                Expr.Convert(Expr.Convert(Expr.Convert(Expr.Constant(16), typeof(object)), typeof(int)),typeof(object)))
+                Expr.Convert(Expr.Convert(Expr.Convert(Expr.Constant(16), typeof(object)), typeof(int)), typeof(object)))
                 ));
-            
+
             Console.WriteLine(builder.ToString());
-            
+
             builder.Compile();
 
 
@@ -78,17 +78,31 @@ namespace Playground
 
             builder.AddStatements(
                 Expr.TryFinally(
-                    Expr.IfThenElse(Expr.Parameter(1, typeof (string)),
-                                    Expr.Call(typeof (Console).GetMethod("WriteLine", new[] {typeof (string)}),
-                                              Expr.Parameter(1, typeof (string))),
-                                    Expr.Throw(Expr.New(typeof (Exception), Expr.Constant("No string provided!")))
-                        ),
-                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }),Expr.Constant("finally!")))
+                    Expr.IfThenElse(Expr.Parameter(1, typeof(string)),
+                                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Parameter(1, typeof(string))),
+                                    Expr.Throw(Expr.New(typeof(Exception), Expr.Constant("No string provided!")))),
+                    Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("finally!")))
                 );
 
             Console.WriteLine(builder.ToString());
-
             builder.Compile();
+
+
+            mb = typeBuilder.DefineMethod("localVar", MethodAttributes.Public);
+            mb.SetReturnType(typeof(void));
+
+
+            var var1 = Expr.DeclareLocalVar(typeof(string), "o");
+            var var2 = Expr.DeclareLocalVar(typeof(int), "i");
+            builder = new MethodBodyBuilder(mb, typeof(string));
+            builder.AddStatements(
+                Expr.WriteLocal(var1, Expr.Constant("High {0}!")),
+                Expr.WriteLocal(var2, Expr.Constant(5)),
+                Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string), typeof(object) }), Expr.ReadLocal(var1), Expr.Convert(Expr.ReadLocal(var2), typeof(object))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
 
 namespace CodeBuilder
@@ -16,5 +15,7 @@ namespace CodeBuilder
         void SetFinallyBlock(Label label);
         void ResetFinallyBlock(Label label);
         void ResetExceptionBlock(Label label);
+        LocalBuilder GetOrDeclareLocalIndex(LocalVariable variable);
+        LocalBuilder GetLocalIndex(LocalVariable variable);
     }
 }
