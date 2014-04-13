@@ -57,5 +57,13 @@ namespace CodeBuilder
         public static IfThenElseExpression IfThenElse(Expression predicate, Expression thenExpression, Expression elseExpression) { return new IfThenElseExpression(predicate, thenExpression, elseExpression); }
 
         public static EmptyExpression Empty() { return new EmptyExpression(); }
+        /// <summary>
+        /// Returns ~value
+        /// </summary>
+        public static NotExpression Not(Expression value) { return new NotExpression(value); }
+        /// <summary>
+        /// Returns -value
+        /// </summary>
+        public static NegateExpression Negate(Expression value) { return new NegateExpression(value); }
     }
 }

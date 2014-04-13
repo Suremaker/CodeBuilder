@@ -123,6 +123,16 @@ namespace Playground
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
+            mb = typeBuilder.DefineMethod("negNot", MethodAttributes.Public);
+            mb.SetReturnType(typeof(int));
+            mb.SetParameters(typeof(byte));
+
+            builder = new MethodBodyBuilder(mb, typeof(byte));
+            builder.AddStatements(Expr.Return(Expr.Not(Expr.Negate(Expr.Parameter(1,typeof(byte))))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

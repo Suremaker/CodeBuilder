@@ -19,6 +19,7 @@ namespace Reflector
             catch (Exception e) { Console.WriteLine(e);}
 
             myClass.localVar();
+            Console.WriteLine(myClass.negNot(55));
             Console.ReadKey();
         }
     }

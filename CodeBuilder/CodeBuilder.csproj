@@ -49,6 +49,8 @@
     <Compile Include="Expressions\IfThenElseExpression.cs" />
     <Compile Include="Expressions\LocalReadExpression.cs" />
     <Compile Include="Expressions\LocalWriteExpression.cs" />
+    <Compile Include="Expressions\NegateExpression.cs" />
+    <Compile Include="Expressions\NotExpression.cs" />
     <Compile Include="Expressions\RethrowExpression.cs" />
     <Compile Include="Expressions\ThrowExpression.cs" />
     <Compile Include="Expressions\TryCatchFinallyExpression.cs" />
