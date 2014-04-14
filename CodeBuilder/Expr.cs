@@ -78,5 +78,8 @@ namespace CodeBuilder
         public static BlockExpression Block(params Expression[] expressions) { return new BlockExpression(expressions); }
         public static AddExpression Add(Expression left, Expression right) { return new AddExpression(left, right); }
         public static AddExpression AddChecked(Expression left, Expression right) { return new AddExpression(left, right, true); }
+        public static LessExpression Less(Expression left, Expression right) { return new LessExpression(left, right); }
+        public static GreaterExpression Greater(Expression left, Expression right) { return new GreaterExpression(left, right); }
+        public static EqualExpression Equal(Expression left, Expression right) { return new EqualExpression(left, right); }
     }
 }
