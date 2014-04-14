@@ -34,7 +34,7 @@ namespace CodeBuilder.Expressions
             _predicate.Dump(builder);
             builder.AppendLine(")").AppendLine("{");
             _thenExpression.Dump(builder);
-            return builder.AppendLine().AppendLine("}");
+            return builder.AppendLine("}");
         }
     }
 }

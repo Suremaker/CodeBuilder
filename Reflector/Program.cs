@@ -19,7 +19,8 @@ namespace Reflector
             catch (Exception e) { Console.WriteLine(e);}
 
             myClass.localVar();
-            Console.WriteLine(myClass.negNot((byte)6));
+            Console.WriteLine(myClass.negNot(6));
+            myClass.loop();
             Console.ReadKey();
 
             Console.ReadKey();

@@ -127,7 +127,7 @@ namespace Playground
             mb.SetParameters(typeof(byte));
 
             builder = new MethodBodyBuilder(mb, typeof(byte));
-            builder.AddStatements(Expr.Return(Expr.Not(Expr.Negate(Expr.Parameter(1,typeof(byte))))));
+            builder.AddStatements(Expr.Return(Expr.Not(Expr.Negate(Expr.Parameter(1, typeof(byte))))));
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
@@ -139,13 +139,18 @@ namespace Playground
             var iVar = Expr.DeclareLocalVar(typeof(int), "i");
             builder = new MethodBodyBuilder(mb);
             builder.AddStatements(
-                Expr.WriteLocal(iVar,Expr.Constant(0)),
-                Expr.Loop(Expr.IfThenElse(Expr.ReadLocal(iVar),Expr.LoopContinue(),Expr.LoopBreak()))
+                Expr.WriteLocal(iVar, Expr.Constant(10)),
+                Expr.Loop(Expr.IfThenElse(
+                    Expr.ReadLocal(iVar),
+                    Expr.Block(
+                        Expr.WriteLocal(iVar, Expr.Add(Expr.ReadLocal(iVar), Expr.Constant(-1))),
+                        Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("loop!..."))),
+                   Expr.LoopBreak()))
                 );
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
-            
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

@@ -40,6 +40,8 @@
     <Compile Include="Context\BuildContext.cs" />
     <Compile Include="Context\IBuildContext.cs" />
     <Compile Include="Context\LoopData.cs" />
+    <Compile Include="Expressions\AddExpression.cs" />
+    <Compile Include="Expressions\BlockExpression.cs" />
     <Compile Include="Expressions\CallExpression.cs" />
     <Compile Include="Expressions\ConvertExpression.cs" />
     <Compile Include="Expressions\EmptyExpression.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Expressions\TryCatchFinallyExpression.cs" />
     <Compile Include="Expressions\ValueOnStackExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
+    <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\ExprHelper.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
