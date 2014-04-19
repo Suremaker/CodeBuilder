@@ -28,6 +28,13 @@ namespace CodeBuilder
             _ctx = new BuildContext(ctorBuilder.GetILGenerator(), typeof(void), PrepareParameters(ctorBuilder, parameters));
         }
 
+        public MethodBodyBuilder(DynamicMethod dynamicMethod, params Type[] parameters)
+        {
+            Validators.NullCheck(dynamicMethod, "methodBuilder");
+            Validators.NullCollectionElementsCheck(parameters, "parameters");
+            _ctx = new BuildContext(dynamicMethod.GetILGenerator(), dynamicMethod.ReturnType, PrepareParameters(dynamicMethod, parameters));
+        }
+
         private Type[] PrepareParameters(MethodBase methodBase, Type[] parameters)
         {
             var result = new Type[parameters.Length + (methodBase.IsStatic ? 0 : 1)];

@@ -12,7 +12,6 @@ namespace CodeBuilder
         public static ConstExpression Constant(long value) { return new ConstExpression(value); }
         public static ConstExpression Constant(float value) { return new ConstExpression(value); }
         public static ConstExpression Constant(double value) { return new ConstExpression(value); }
-        public static ConstExpression Constant(Type value) { return new ConstExpression(value); }
 
         public static FieldWriteExpression FieldWrite(FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(null, fieldInfo, value); }
         public static FieldWriteExpression FieldWrite(Expression instance, FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(instance, fieldInfo, value); }

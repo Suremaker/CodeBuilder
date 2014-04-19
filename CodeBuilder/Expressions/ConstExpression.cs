@@ -46,26 +46,18 @@ namespace CodeBuilder.Expressions
             _action = CompileStr;
         }
 
-        public ConstExpression(Type value) : base(typeof(Type))
-        {
-            _value = value;
-            _action = CompileType;
-        }
-
-        private void CompileType(IBuildContext ctx)
-        {
-            ctx.Generator.Emit(OpCodes.Ldtoken, (Type)_value);
-        }
-
         private void CompileStr(IBuildContext ctx)
         {
-            ctx.Generator.Emit(OpCodes.Ldstr, (string)_value);
+            var value = (string)_value;
+            if (value != null)
+                ctx.Generator.Emit(OpCodes.Ldstr, value);
+            else
+                ctx.Generator.Emit(OpCodes.Ldnull);
         }
 
         private void CompileInt(IBuildContext ctx)
         {
-            var opCode = FindIntOpCode((int)_value);
-            EmitIntCode(ctx, opCode);
+            EmitIntCode(ctx, (int)_value);
         }
 
         private void CompileLong(IBuildContext ctx)
@@ -73,7 +65,7 @@ namespace CodeBuilder.Expressions
             var value = (long)_value;
             if (value >= int.MinValue && value <= int.MaxValue)
             {
-                EmitIntCode(ctx, FindIntOpCode((int)value));
+                EmitIntCode(ctx, (int)value);
                 ctx.Generator.Emit(OpCodes.Conv_I8);
             }
             else
@@ -90,17 +82,18 @@ namespace CodeBuilder.Expressions
             ctx.Generator.Emit(OpCodes.Ldc_R8, (double)_value);
         }
 
-        private void EmitIntCode(IBuildContext ctx, OpCode opCode)
+        private static void EmitIntCode(IBuildContext ctx, int value)
         {
+            var opCode = FindIntOpCode(value);
             if (opCode == OpCodes.Ldc_I4_S)
-                ctx.Generator.Emit(opCode, (sbyte)(int)_value);
+                ctx.Generator.Emit(opCode, (sbyte)value);
             else if (opCode == OpCodes.Ldc_I4)
-                ctx.Generator.Emit(opCode, (int)_value);
+                ctx.Generator.Emit(opCode, value);
             else
                 ctx.Generator.Emit(opCode);
         }
 
-        private OpCode FindIntOpCode(int value)
+        private static OpCode FindIntOpCode(int value)
         {
             if (value == 0) return OpCodes.Ldc_I4_0;
             if (value == 1) return OpCodes.Ldc_I4_1;
