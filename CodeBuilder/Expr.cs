@@ -18,8 +18,13 @@ namespace CodeBuilder
         public static ReturnExpression Return() { return new ReturnExpression(); }
         public static ReturnExpression Return(Expression value) { return new ReturnExpression(value); }
 
-        public static CallExpression Call(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo, arguments); }
-        public static CallExpression Call(MethodInfo methodInfo, params Expression[] arguments) { return Call(null, methodInfo, arguments); }
+        /// <summary>
+        /// Calls instance method specified by methodInfo in a way that even if it would be a virtual method, it would be called in non-virtual way.
+        /// It can be used to implement base calls.
+        /// </summary>
+        public static CallExpression CallExact(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo, arguments, true); }
+        public static CallExpression Call(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo,arguments); }
+        public static CallExpression Call(MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(null, methodInfo, arguments); }
 
         public static PopExpression Pop(Expression expression) { return new PopExpression(expression); }
 

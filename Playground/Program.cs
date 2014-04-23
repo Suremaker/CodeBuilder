@@ -156,11 +156,22 @@ namespace Playground
 
 
             builder = new MethodBodyBuilder(mb);
-            builder.AddStatements(Expr.Return(Expr.Convert(Expr.Constant(-1),typeof(ulong))));
+            builder.AddStatements(Expr.Return(Expr.Convert(Expr.Constant(-1), typeof(ulong))));
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
+
+            /*mb = typeBuilder.DefineMethod("intTS", MethodAttributes.Public);
+            mb.SetReturnType(typeof(string));
+
+
+            builder = new MethodBodyBuilder(mb);
+            builder.AddStatements(Expr.Return(Expr.Call(Expr.Constant(21), typeof(int).GetMethod("ToString", new Type[0]))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+            */
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

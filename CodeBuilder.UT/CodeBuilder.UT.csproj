@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="BlockExpressionTests.cs" />
     <Compile Include="BuilderTestBase.cs" />
+    <Compile Include="CallExpressionTests.cs" />
     <Compile Include="ConstExpressionTests.cs" />
     <Compile Include="ConvertExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
