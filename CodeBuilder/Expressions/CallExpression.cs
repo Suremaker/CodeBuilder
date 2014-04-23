@@ -24,11 +24,7 @@ namespace CodeBuilder.Expressions
             else if (instance != null)
                 throw new ArgumentException("Static method cannot be called with instance parameter", "instance");
             if (instance != null)
-            {
                 Validators.HierarchyCheck(instance.ExpressionType, methodInfo.DeclaringType, "Instance expression of type {0} does not match to type: {1}", "instance");
-                if (methodInfo.DeclaringType.IsValueType)
-                    throw new NotSupportedException("Calling instance methods on struct types is not supported yet.");
-            }
 
             Validators.ParameterCheck(methodInfo, arguments, "arguments");
 
@@ -41,7 +37,11 @@ namespace CodeBuilder.Expressions
         internal override void Compile(IBuildContext ctx)
         {
             if (_instance != null)
+            {
                 _instance.Compile(ctx);
+                if (_instance.ExpressionType.IsValueType)
+                    LoadValueTypeAddress(ctx);
+            }
             foreach (var value in _arguments)
                 value.Compile(ctx);
 
@@ -49,6 +49,14 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit(OpCodes.Callvirt, _methodInfo);
             else
                 ctx.Generator.Emit(OpCodes.Call, _methodInfo);
+        }
+
+        private void LoadValueTypeAddress(IBuildContext ctx)
+        {
+            //TODO: rethink if this can be refactored and expressed as dedicated expression...
+            var local = ctx.Generator.DeclareLocal(_instance.ExpressionType);
+            ctx.Generator.Emit(OpCodes.Stloc, local);
+            ctx.Generator.Emit(OpCodes.Ldloca, local);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

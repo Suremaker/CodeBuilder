@@ -162,7 +162,7 @@ namespace Playground
             builder.Compile();
 
 
-            /*mb = typeBuilder.DefineMethod("intTS", MethodAttributes.Public);
+            mb = typeBuilder.DefineMethod("intTS", MethodAttributes.Public);
             mb.SetReturnType(typeof(string));
 
 
@@ -171,7 +171,7 @@ namespace Playground
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
-            */
+            
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

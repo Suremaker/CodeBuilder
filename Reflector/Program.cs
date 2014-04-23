@@ -16,13 +16,13 @@ namespace Reflector
 
             myClass.tryFinally("abc");
             try { myClass.tryCatchFinally(null); }
-            catch (Exception e) { Console.WriteLine(e);}
+            catch (Exception e) { Console.WriteLine(e); }
 
             myClass.localVar();
             Console.WriteLine(myClass.negNot(6));
             myClass.loop();
+            Console.WriteLine(myClass.intTS());
             Console.ReadKey();
-
             Console.ReadKey();
         }
     }

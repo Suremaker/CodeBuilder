@@ -128,7 +128,6 @@ namespace CodeBuilder.UT
         }
 
         [Test]
-        [Ignore("Not implemented yet")]
         public void Should_call_struct_instance_method()
         {
             var func = CreateFunc<string>(Expr.Return(Expr.Call(Expr.Constant(21), _toStringInfo)));
