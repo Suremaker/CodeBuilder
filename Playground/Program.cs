@@ -151,6 +151,16 @@ namespace Playground
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
+            mb = typeBuilder.DefineMethod("conv", MethodAttributes.Public);
+            mb.SetReturnType(typeof(ulong));
+
+
+            builder = new MethodBodyBuilder(mb);
+            builder.AddStatements(Expr.Return(Expr.Convert(Expr.Constant(-1),typeof(ulong))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

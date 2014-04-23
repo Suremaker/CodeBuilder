@@ -2,6 +2,7 @@
 
 namespace CodeBuilder.UT
 {
+    [TestFixture]
     public class ConstExpressionTests : BuilderTestBase
     {
         [Test]

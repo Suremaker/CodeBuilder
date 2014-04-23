@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace CodeBuilder.UT
 {
+    [TestFixture]
     public class ReturnExpressionTests : BuilderTestBase
     {
         public class BaseType { }

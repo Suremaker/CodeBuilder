@@ -5,12 +5,16 @@ using NUnit.Framework;
 
 namespace CodeBuilder.UT
 {
-    [TestFixture]
     public abstract class BuilderTestBase
     {
         protected static Func<TResult> CreateFunc<TResult>(params Expression[] expressions)
         {
             return (Func<TResult>)CreateMethod(typeof(Func<TResult>), typeof(TResult), new Type[0], expressions);
+        }
+
+        protected static Func<TParam, TResult> CreateFunc<TParam, TResult>(params Expression[] expressions)
+        {
+            return (Func<TParam, TResult>)CreateMethod(typeof(Func<TParam, TResult>), typeof(TResult), new[] { typeof(TParam) }, expressions);
         }
 
         protected static Action CreateAction(params Expression[] expressions)

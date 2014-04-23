@@ -36,6 +36,8 @@ namespace CodeBuilder.Helpers
         public static void ConversionCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
         {
             NullCheck(actual, paramName);
+            if (actual.IsPrimitive && toType.IsPrimitive)
+                return;
             if (!toType.IsAssignableFrom(actual) && !actual.IsAssignableFrom(toType))
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
         }
@@ -55,7 +57,7 @@ namespace CodeBuilder.Helpers
             for (int i = 0; i < expected.Length; ++i)
             {
                 NullCheck(actual[i], string.Format("{0}[{1}]", paramName, i));
-                HierarchyCheck(actual[i].ExpressionType, expected[i].ParameterType, "Parameter expression of type {0} does not match to type: {1}",string.Format("{0}[{1}]",paramName,i));
+                HierarchyCheck(actual[i].ExpressionType, expected[i].ParameterType, "Parameter expression of type {0} does not match to type: {1}", string.Format("{0}[{1}]", paramName, i));
             }
         }
     }
