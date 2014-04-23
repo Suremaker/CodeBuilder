@@ -22,14 +22,19 @@ namespace CodeBuilder.Helpers
             return arg;
         }
 
+        public static bool IsInHierarchy(Type actual, Type expected)
+        {
+            //value types have to be boxed or converted explicitly
+            if ((actual.IsValueType || expected.IsValueType) && actual != expected)
+                return false;
+            return expected.IsAssignableFrom(actual);
+        }
+
         public static void HierarchyCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
         {
             NullCheck(actual, paramName);
-            //value types have to be boxed or converted explicitly
-            if ((actual.IsValueType || toType.IsValueType) && actual != toType)
-                throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
-
-            if (!toType.IsAssignableFrom(actual))
+            
+            if (!IsInHierarchy(actual,toType))
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
         }
 

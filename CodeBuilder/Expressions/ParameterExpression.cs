@@ -11,7 +11,7 @@ namespace CodeBuilder.Expressions
         private readonly ushort _parameterId;
 
         public ParameterExpression(ushort parameterId, Type type)
-            : base(type)
+            : base(Validators.NullCheck(type, "type"))
         {
             _parameterId = parameterId;
         }
@@ -31,7 +31,7 @@ namespace CodeBuilder.Expressions
         {
             if (ctx.Parameters.Length <= _parameterId)
                 throw new InvalidOperationException(string.Format("Parameter index {0} is outside of bounds. Expected parameters: [{1}]", _parameterId, StringFormat.Join(ctx.Parameters, ",")));
-            if (!ctx.Parameters[_parameterId].IsAssignableFrom(ExpressionType))
+            if (!Validators.IsInHierarchy(ctx.Parameters[_parameterId], ExpressionType))
                 throw new InvalidOperationException(string.Format("Parameter index {0} is of {1} type, while type {2} is expected", _parameterId, ExpressionType, ctx.Parameters[_parameterId]));
         }
 

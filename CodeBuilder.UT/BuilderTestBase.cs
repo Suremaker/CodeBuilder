@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection.Emit;
 using CodeBuilder.Expressions;
-using NUnit.Framework;
 
 namespace CodeBuilder.UT
 {
@@ -15,6 +14,26 @@ namespace CodeBuilder.UT
         protected static Func<TParam, TResult> CreateFunc<TParam, TResult>(params Expression[] expressions)
         {
             return (Func<TParam, TResult>)CreateMethod(typeof(Func<TParam, TResult>), typeof(TResult), new[] { typeof(TParam) }, expressions);
+        }
+
+        protected static Func<TParam1, TParam2, TResult> CreateFunc<TParam1, TParam2, TResult>(params Expression[] expressions)
+        {
+            return (Func<TParam1, TParam2, TResult>)CreateMethod(typeof(Func<TParam1, TParam2, TResult>), typeof(TResult), new[] { typeof(TParam1), typeof(TParam2) }, expressions);
+        }
+
+        protected static Func<TParam1, TParam2, TParam3, TResult> CreateFunc<TParam1, TParam2, TParam3, TResult>(params Expression[] expressions)
+        {
+            return (Func<TParam1, TParam2, TParam3, TResult>)CreateMethod(typeof(Func<TParam1, TParam2, TParam3, TResult>), typeof(TResult), new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3) }, expressions);
+        }
+
+        protected static Func<TParam1, TParam2, TParam3, TParam4, TResult> CreateFunc<TParam1, TParam2, TParam3, TParam4, TResult>(params Expression[] expressions)
+        {
+            return (Func<TParam1, TParam2, TParam3, TParam4, TResult>)CreateMethod(typeof(Func<TParam1, TParam2, TParam3, TParam4, TResult>), typeof(TResult), new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3), typeof(TParam4) }, expressions);
+        }
+
+        protected static Func<TParam1, TParam2, TParam3, TParam4, TParam5, TResult> CreateFunc<TParam1, TParam2, TParam3, TParam4, TParam5, TResult>(params Expression[] expressions)
+        {
+            return (Func<TParam1, TParam2, TParam3, TParam4, TParam5, TResult>)CreateMethod(typeof(Func<TParam1, TParam2, TParam3, TParam4, TParam5, TResult>), typeof(TResult), new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3), typeof(TParam4), typeof(TParam5) }, expressions);
         }
 
         protected static Action CreateAction(params Expression[] expressions)
