@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace CodeBuilder.UT
@@ -7,7 +8,17 @@ namespace CodeBuilder.UT
     public class ParameterExpressionTests : BuilderTestBase
     {
         public class BaseType { }
-        public class DerivedType : BaseType { }
+        public class DerivedType : BaseType
+        {
+            public DerivedType Call(int x)
+            {
+                X = x;
+                return this;
+            }
+
+            public int X { get; set; }
+        }
+
         [Test]
         public void ExpressionTypeTest()
         {
@@ -61,6 +72,15 @@ namespace CodeBuilder.UT
                 Expr.Parameter(3, typeof(long)),
                 Expr.Parameter(4, typeof(bool)))));
             Assert.That(func(1, 'a', "text", -23, false), Is.EqualTo("1_a_text_-23_False"));
+        }
+
+        [Test]
+        public void Should_properly_map_parameters_with_this()
+        {
+            MethodInfo mi = typeof(DerivedType).GetMethod("Call");
+            var func = CreateFunc<DerivedType, int, DerivedType>(Expr.Return(Expr.Call(Expr.Parameter(0, typeof(DerivedType)), mi, Expr.Parameter(1, typeof(int)))));
+            var obj = func(new DerivedType(), 32);
+            Assert.That(obj.X, Is.EqualTo(32));
         }
 
         public static string Format(int arg1, char arg2, string arg3, long arg4, bool arg5)
