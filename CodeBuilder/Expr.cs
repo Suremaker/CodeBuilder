@@ -30,8 +30,8 @@ namespace CodeBuilder
 
         public static ParameterExpression Parameter(ushort parameterId, Type type) { return new ParameterExpression(parameterId, type); }
 
-        public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertExpression(expression, type); }
-        public static ConvertExpression ConvertChecked(Expression expression, Type type) { return new ConvertExpression(expression, type, true); }
+        public static ConvertExpression Convert(Expression expression, Type type) { return new ConvertUncheckedExpression(expression, type); }
+        public static ConvertExpression ConvertChecked(Expression expression, Type type) { return new ConvertCheckedExpression(expression, type); }
         public static ThrowExpression Throw(Expression exceptionExpression) { return new ThrowExpression(exceptionExpression); }
         public static RethrowExpression Rethrow() { return new RethrowExpression(); }
         public static TryCatchFinallyExpression TryFinally(Expression tryExpression, Expression finallyExpression) { return new TryCatchFinallyExpression(tryExpression, finallyExpression); }

@@ -349,7 +349,7 @@ namespace CodeBuilder.UT
             AssertOverflow<short, char>((char)short.MaxValue, (a, b) => (char)(a + b), 1);
             AssertOverflow<short, int>(short.MinValue, short.MaxValue, (a, b) => a + b);
             AssertOverflow<short, uint>((uint)short.MaxValue, (a, b) => (uint)(a + b), 1);
-            AssertOverflow<short, long>(short.MinValue, sbyte.MaxValue, (a, b) => a + b);
+            AssertOverflow<short, long>(short.MinValue, short.MaxValue, (a, b) => a + b);
             AssertOverflow<short, ulong>((ulong)short.MaxValue, (a, b) => a + (uint)b, 1);
         }
 
@@ -386,6 +386,73 @@ namespace CodeBuilder.UT
             AssertOverflow<long, ulong>(long.MaxValue, (a, b) => a + (uint)b, 1);
         }
 
+        [Test]
+        public void Should_box_and_unbox_primitives()
+        {
+            AssertBoxing<byte, object>(3);
+            AssertBoxing<sbyte, object>(3);
+            AssertBoxing<short, object>(3);
+            AssertBoxing<ushort, object>(3);
+            AssertBoxing<char, object>((char)3);
+            AssertBoxing<int, object>(3);
+            AssertBoxing<uint, object>(3);
+            AssertBoxing<long, object>(3);
+            AssertBoxing<ulong, object>(3);
+            AssertBoxing<float, object>(3.14f);
+            AssertBoxing<double, object>(3.14);
+        }
+
+        [Test]
+        public void Should_box_and_unbox_structs()
+        {
+            AssertBoxing<DateTime, object>(new DateTime(2015, 03, 02, 22, 23, 32, 647));
+        }
+
+        [Test]
+        public void Should_box_and_unbox_primitive_to_interface()
+        {
+            AssertBoxing<int, IComparable>(3);
+        }
+
+        [Test]
+        public void Should_cast_to_base_type()
+        {
+            var derivedType = new DerivedType();
+            BaseType casted = CreateConvertFunc<DerivedType, BaseType>().Invoke(derivedType);
+            Assert.That(casted, Is.SameAs(derivedType));
+        }
+
+        [Test]
+        public void Should_cast_to_derived_type()
+        {
+            BaseType baseType = new DerivedType();
+            DerivedType casted = CreateConvertFunc<BaseType, DerivedType>().Invoke(baseType);
+            Assert.That(casted, Is.SameAs(baseType));
+        }
+
+        [Test]
+        public void Should_cast_fail_on_casting_to_derived_type_if_type_does_not_match()
+        {
+            Assert.Throws<InvalidCastException>(() => CreateConvertFunc<BaseType, DerivedType>().Invoke(new BaseType()));
+        }
+
+        [Test]
+        public void Should_not_allow_conversion_of_unrelated_types()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => CreateConvertFunc<string, DateTime>());
+            Assert.That(ex.Message, Is.StringContaining("Cannot convert type from System.String to System.DateTime"));
+        }
+
+        private void AssertBoxing<TUnboxed, TBoxed>(TUnboxed value)
+            where TUnboxed : struct, TBoxed
+            where TBoxed : class
+        {
+            TBoxed boxed = CreateConvertFunc<TUnboxed, TBoxed>()(value);
+            Assert.That(boxed, Is.EqualTo(value));
+            TUnboxed unboxed = CreateConvertFunc<TBoxed, TUnboxed>()(boxed);
+            Assert.That(unboxed, Is.EqualTo(value));
+        }
+
         private void AssertOverflow<TConverted, T>(T min, T max, Func<T, int, T> addition)
         {
             AssertOverflow<TConverted, T>(min, addition, -1);
@@ -401,7 +468,23 @@ namespace CodeBuilder.UT
             Assert.Throws<OverflowException>(() => func(addition(value, delta)));
         }
 
-        #region Helper methods
+        private static Func<TParam, TRet> CreateConvertFunc<TParam, TRet>()
+        {
+            return CreateFunc<TParam, TRet>(Expr.Return(Expr.Convert(Expr.Parameter(0, typeof(TParam)), typeof(TRet))));
+        }
+
+        private static Func<TParam, TRet> CreateConvertCheckedFunc<TParam, TRet>()
+        {
+            return CreateFunc<TParam, TRet>(Expr.Return(Expr.ConvertChecked(Expr.Parameter(0, typeof(TParam)), typeof(TRet))));
+        }
+
+        private static Func<object, object> CreateConvertFunc(Type from, Type to)
+        {
+            Func<Func<object, object>> fun = CreateConvertFunc<object, object>;
+            var generic = (MulticastDelegate)fun.Method.GetGenericMethodDefinition().MakeGenericMethod(@from, to).Invoke(null, new object[0]);
+            return p => generic.DynamicInvoke(p);
+        }
+        #region Data factories
         public static IEnumerable<ConversionExpectation> GetUIntConversions()
         {
             return _castTable[typeof(uint)].Select(kv => new ConversionExpectation(kv.Key, kv.Value));
@@ -499,7 +582,7 @@ namespace CodeBuilder.UT
 
         public static float[] GetFloatValues()
         {
-            return new[] { float.MinValue, -3.14f, 0, 3.14f, float.MaxValue };
+            return new[] { float.MinValue, -3.14f, -3, 0, 3, 3.14f, float.MaxValue };
         }
 
         public static IEnumerable<ConversionExpectation> GetDoubleConversions()
@@ -509,24 +592,9 @@ namespace CodeBuilder.UT
 
         public static double[] GetDoubleValues()
         {
-            return new[] { double.MinValue, float.MinValue, -3.14, 0, 3.14, float.MaxValue, double.MaxValue };
+            return new[] { double.MinValue, float.MinValue, -3.14, -3, 0, 3, 3.14, float.MaxValue, double.MaxValue };
         }
         #endregion
-        private static Func<TParam, TRet> CreateConvertFunc<TParam, TRet>()
-        {
-            return CreateFunc<TParam, TRet>(Expr.Return(Expr.Convert(Expr.Parameter(0, typeof(TParam)), typeof(TRet))));
-        }
 
-        private static Func<TParam, TRet> CreateConvertCheckedFunc<TParam, TRet>()
-        {
-            return CreateFunc<TParam, TRet>(Expr.Return(Expr.ConvertChecked(Expr.Parameter(0, typeof(TParam)), typeof(TRet))));
-        }
-
-        private static Func<object, object> CreateConvertFunc(Type from, Type to)
-        {
-            Func<Func<object, object>> fun = CreateConvertFunc<object, object>;
-            var generic = (MulticastDelegate)fun.Method.GetGenericMethodDefinition().MakeGenericMethod(@from, to).Invoke(null, new object[0]);
-            return p => generic.DynamicInvoke(p);
-        }
     }
 }
