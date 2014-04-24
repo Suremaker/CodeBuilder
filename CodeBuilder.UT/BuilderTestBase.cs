@@ -51,6 +51,11 @@ namespace CodeBuilder.UT
             return (Action<TParam1, TParam2>)CreateMethod(typeof(Action<TParam1, TParam2>), typeof(void), new[] { typeof(TParam1), typeof(TParam2) }, expressions);
         }
 
+        protected static Action<TParam1, TParam2, TParam3> CreateAction<TParam1, TParam2, TParam3>(params Expression[] expressions)
+        {
+            return (Action<TParam1, TParam2, TParam3>)CreateMethod(typeof(Action<TParam1, TParam2, TParam3>), typeof(void), new[] { typeof(TParam1), typeof(TParam2), typeof(TParam3) }, expressions);
+        }
+
         private static Delegate CreateMethod(Type delegateType, Type returnType, Type[] parameterTypes, params Expression[] expressions)
         {
             var method = new DynamicMethod("testMethod", returnType, parameterTypes, typeof(BuilderTestBase), true);

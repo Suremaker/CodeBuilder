@@ -48,6 +48,8 @@
     <Compile Include="FieldAccessTests.cs" />
     <Compile Include="FieldReadExpressionTests.cs" />
     <Compile Include="FieldWriteExpressionTests.cs" />
+    <Compile Include="IfThenElseExpressionTests.cs" />
+    <Compile Include="IfThenExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnExpressionTests.cs" />
