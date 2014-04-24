@@ -50,6 +50,13 @@ namespace CodeBuilder.UT
         }
 
         [Test]
+        public void Should_not_allow_return_void_explicitly()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => Expr.Return(Expr.Empty()));
+            Assert.That(ex.Message,Is.StringContaining("Void expressions cannot be returned explicitly. Please use Expr.Return() instead."));
+        }
+
+        [Test]
         public void Should_return_polymorphic_type()
         {
             var func = CreateFunc<BaseType>(Expr.Return(Expr.New(typeof(DerivedType))));

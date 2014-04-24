@@ -21,6 +21,8 @@ namespace CodeBuilder.Expressions
             _value = value;
             if (value == null)
                 throw new ArgumentNullException("value");
+            if (value.ExpressionType == typeof(void))
+                throw new ArgumentException("Void expressions cannot be returned explicitly. Please use Expr.Return() instead.");
             ReturnType = value.ExpressionType;
         }
 

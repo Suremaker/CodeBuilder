@@ -44,6 +44,7 @@
     <Compile Include="CallExpressionTests.cs" />
     <Compile Include="ConstExpressionTests.cs" />
     <Compile Include="ConvertExpressionTests.cs" />
+    <Compile Include="EqualExpressionTests.cs" />
     <Compile Include="FieldAccessTests.cs" />
     <Compile Include="FieldReadExpressionTests.cs" />
     <Compile Include="FieldWriteExpressionTests.cs" />

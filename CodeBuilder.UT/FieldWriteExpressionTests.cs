@@ -68,7 +68,7 @@ namespace CodeBuilder.UT
         [Test]
         public void Should_write_local_field_of_class()
         {
-            var func = CreateAction<TestClass, string>(Expr.Return(Expr.WriteField(Expr.Parameter(0, typeof(TestClass)), _classLocal, Expr.Parameter(1, typeof(string)))));
+            var func = CreateAction<TestClass, string>(Expr.WriteField(Expr.Parameter(0, typeof(TestClass)), _classLocal, Expr.Parameter(1, typeof(string))));
             var tc = new TestClass();
             func(tc, "abc");
             Assert.That(tc.GetLocal(), Is.EqualTo("abc"));

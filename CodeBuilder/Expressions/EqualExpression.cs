@@ -27,9 +27,19 @@ namespace CodeBuilder.Expressions
         {
             if (CollectionHelper.Contains(_compatible, left) && CollectionHelper.Contains(_compatible, right))
                 return;
-            if ((left.IsPrimitive || left.IsClass) && left == right)
+            if (left.IsPrimitive || left.IsEnum)
+            {
+                if (left != right)
+                    throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to the same type as other.", left, right));
                 return;
-            throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to corresponding type.", left, right));
+            }
+            if (left.IsValueType || right.IsValueType)
+                throw new ArgumentException("Comparison of value types is not supported.");
+            if (left == right)
+                return;
+            if (Validators.IsInHierarchy(right, left) || Validators.IsInHierarchy(left, right))
+                return;
+            throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to the same type as other.", left, right));
         }
 
         internal override void Compile(IBuildContext ctx)
