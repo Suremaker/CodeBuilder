@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection.Emit;
 
 namespace CodeBuilder.Context
@@ -76,7 +75,7 @@ namespace CodeBuilder.Context
             LocalBuilder value;
             if (_localVars.TryGetValue(variable, out value))
                 return value;
-            throw new IOException(string.Format("Uninitialized local variable access: {0}", variable));
+            throw new InvalidOperationException(string.Format("Uninitialized local variable access: {0}", variable));
         }
 
         public void SetCatchBlock(Label label)

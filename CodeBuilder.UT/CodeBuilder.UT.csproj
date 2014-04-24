@@ -50,6 +50,7 @@
     <Compile Include="FieldWriteExpressionTests.cs" />
     <Compile Include="IfThenElseExpressionTests.cs" />
     <Compile Include="IfThenExpressionTests.cs" />
+    <Compile Include="LocalExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnExpressionTests.cs" />
