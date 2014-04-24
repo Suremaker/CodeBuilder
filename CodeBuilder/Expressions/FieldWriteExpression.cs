@@ -15,15 +15,18 @@ namespace CodeBuilder.Expressions
 
         public FieldWriteExpression(Expression instance, FieldInfo fieldInfo, Expression value)
         {
+            Validators.NullCheck(fieldInfo, "fieldInfo");
             Validators.NullCheck(value, "value");
             if (!fieldInfo.IsStatic)
             {
                 Validators.NullCheck(instance, "instance");
                 Validators.HierarchyCheck(instance.ExpressionType, fieldInfo.DeclaringType, "Instance expression of type {0} does not match to type: {1}", "instance");
             }
+            else if (instance != null)
+                throw new ArgumentException("Static field cannot be written with instance parameter", "instance");
             Validators.HierarchyCheck(value.ExpressionType, fieldInfo.FieldType, "Value expression of type {0} does not match to type: {1}", "value");
 
-            _instance = instance;
+            _instance = (instance == null) ? null : instance.EnsureCallableForm();
             _fieldInfo = fieldInfo;
             _value = value;
         }

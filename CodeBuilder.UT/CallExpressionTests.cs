@@ -29,6 +29,21 @@ namespace CodeBuilder.UT
             }
         }
 
+        public struct Counter
+        {
+            public void Count()
+            {
+                ++Value;
+            }
+
+            public int Value { get; private set; }
+        }
+
+        public class CounterHolder
+        {
+            public Counter Counter;
+        }
+
         public static void Foo() { }
 
         private static readonly MethodInfo _formatInfo = ((Func<string, object, string>)string.Format).Method;
@@ -150,6 +165,38 @@ namespace CodeBuilder.UT
             var func = CreateFunc<BaseClass, string>(Expr.Return(Expr.CallExact(Expr.Parameter(0, typeof(BaseClass)), virtualMethodInfo)));
             Assert.That(func(new BaseClass()), Is.EqualTo("base"));
             Assert.That(func(new DerivedClass()), Is.EqualTo("base"));
+        }
+
+        [Test]
+        public void Should_call_struct_instance_method_via_parameter()
+        {
+            var func = CreateFunc<Counter, Counter>(
+                Expr.Call(Expr.Parameter(0, typeof(Counter)), typeof(Counter).GetMethod("Count")),
+                Expr.Return(Expr.Parameter(0, typeof(Counter))));
+            Assert.That(func(new Counter()).Value, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Should_call_struct_instance_method_via_field()
+        {
+            var func = CreateAction<CounterHolder>(Expr.Call(
+                Expr.ReadField(Expr.Parameter(0, typeof(CounterHolder)), typeof(CounterHolder).GetField("Counter")),
+                typeof(Counter).GetMethod("Count")));
+            var holder = new CounterHolder();
+            func(holder);
+            Assert.That(holder.Counter.Value, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Should_call_struct_instance_method_via_local_variable()
+        {
+            var local = Expr.DeclareLocalVar(typeof(Counter), "s");
+            var func = CreateFunc<Counter, Counter>(
+                Expr.WriteLocal(local, Expr.Parameter(0, typeof(Counter))),
+                Expr.Call(Expr.ReadLocal(local), typeof(Counter).GetMethod("Count")),
+                Expr.Return(Expr.ReadLocal(local)));
+
+            Assert.That(func(new Counter()).Value, Is.EqualTo(1));
         }
     }
 }

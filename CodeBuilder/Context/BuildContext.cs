@@ -12,9 +12,10 @@ namespace CodeBuilder.Context
         private readonly Stack<Label> _catchBlocks = new Stack<Label>();
         private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
         private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
-        public BuildContext(ILGenerator generator, Type returnType, Type[] parameters)
+        public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, bool isSymbolInfoSupported = true)
         {
             Parameters = parameters;
+            IsSymbolInfoSupported = isSymbolInfoSupported;
             ReturnType = returnType;
             Generator = generator;
         }
@@ -25,6 +26,7 @@ namespace CodeBuilder.Context
         public bool IsInExceptionBlock { get { return _exceptionBlocks.Count > 0; } }
         public bool IsInFinallyBlock { get { return _finallyBlocks.Count > 0; } }
         public bool IsInCatchBlock { get { return _catchBlocks.Count > 0; } }
+        public bool IsSymbolInfoSupported { get; private set; }
 
         public void SetExceptionBlock(Label label)
         {
@@ -63,7 +65,8 @@ namespace CodeBuilder.Context
                     throw new ArgumentException(string.Format("Unable to declare '{0}' local variable, '{1}' with same name already exist", variable, v.Key));
             }
             var local = Generator.DeclareLocal(variable.VariableType);
-            local.SetLocalSymInfo(variable.Name);
+            if (IsSymbolInfoSupported)
+                local.SetLocalSymInfo(variable.Name);
             _localVars.Add(variable, local);
             return local;
         }

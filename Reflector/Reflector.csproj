@@ -36,13 +36,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Playground\bin\Debug\PlayGround.Generated.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Playground\Playground.csproj">
+      <Project>{E3EFD8D6-2D99-48E5-8EFB-2EE338AA888D}</Project>
+      <Name>Playground</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

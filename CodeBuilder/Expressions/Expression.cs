@@ -19,5 +19,19 @@ namespace CodeBuilder.Expressions
         {
             return Dump(new StringBuilder()).ToString();
         }
+
+        internal Expression EnsureCallableForm()
+        {
+            if (ExpressionType == typeof(void))
+                throw new InvalidOperationException("Void expression cannot be made callable");
+            return ReturnCallableForm();
+        }
+
+        protected virtual Expression ReturnCallableForm()
+        {
+            if (!ExpressionType.IsValueType)
+                return this;
+            return new ValueTypePointerExpression(this);
+        }
     }
 }

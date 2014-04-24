@@ -32,7 +32,7 @@ namespace CodeBuilder
         {
             Validators.NullCheck(dynamicMethod, "methodBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
-            _ctx = new BuildContext(dynamicMethod.GetILGenerator(), dynamicMethod.ReturnType, PrepareParameters(dynamicMethod, parameters));
+            _ctx = new BuildContext(dynamicMethod.GetILGenerator(), dynamicMethod.ReturnType, PrepareParameters(dynamicMethod, parameters), false);
         }
 
         private Type[] PrepareParameters(MethodBase methodBase, Type[] parameters)

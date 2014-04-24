@@ -1,5 +1,6 @@
 ﻿using System;
 using PlayGround.Generated;
+using Playground;
 
 namespace Reflector
 {
@@ -22,8 +23,12 @@ namespace Reflector
             Console.WriteLine(myClass.negNot(6));
             myClass.loop();
             Console.WriteLine(myClass.intTS());
+            var s = new MyStruct {MyField = "321"};
+            Console.WriteLine(myClass.loadStructField(s));
+            Console.WriteLine(myClass.saveStructField(s,"aaa222").MyField);
             Console.ReadKey();
             Console.ReadKey();
         }
     }
+
 }

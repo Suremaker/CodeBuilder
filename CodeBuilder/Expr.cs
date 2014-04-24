@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Reflection.Emit;
 using CodeBuilder.Expressions;
 
 namespace CodeBuilder
@@ -13,8 +12,8 @@ namespace CodeBuilder
         public static ConstExpression Constant(float value) { return new ConstExpression(value); }
         public static ConstExpression Constant(double value) { return new ConstExpression(value); }
 
-        public static FieldWriteExpression FieldWrite(FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(null, fieldInfo, value); }
-        public static FieldWriteExpression FieldWrite(Expression instance, FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(instance, fieldInfo, value); }
+        public static FieldWriteExpression WriteField(FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(null, fieldInfo, value); }
+        public static FieldWriteExpression WriteField(Expression instance, FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(instance, fieldInfo, value); }
         public static ReturnExpression Return() { return new ReturnExpression(); }
         public static ReturnExpression Return(Expression value) { return new ReturnExpression(value); }
 
@@ -30,8 +29,8 @@ namespace CodeBuilder
 
         public static NewExpression New(Type type, params Expression[] arguments) { return new NewExpression(type, arguments); }
 
-        public static FieldReadExpression ReadField(FieldBuilder fieldInfo) { return new FieldReadExpression(null, fieldInfo); }
-        public static FieldReadExpression ReadField(Expression instance, FieldBuilder fieldInfo) { return new FieldReadExpression(instance, fieldInfo); }
+        public static FieldReadExpression ReadField(FieldInfo fieldInfo) { return new FieldReadExpression(null, fieldInfo); }
+        public static FieldReadExpression ReadField(Expression instance, FieldInfo fieldInfo) { return new FieldReadExpression(instance, fieldInfo); }
 
         public static ParameterExpression Parameter(ushort parameterId, Type type) { return new ParameterExpression(parameterId, type); }
 

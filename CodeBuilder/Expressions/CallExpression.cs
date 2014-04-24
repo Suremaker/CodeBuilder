@@ -28,7 +28,7 @@ namespace CodeBuilder.Expressions
 
             Validators.ParameterCheck(methodInfo, arguments, "arguments");
 
-            _instance = instance;
+            _instance = (instance == null) ? null : instance.EnsureCallableForm();
             _methodInfo = methodInfo;
             _arguments = arguments;
             _forceNonVirtualCall = forceNonVirtualCall;
@@ -36,27 +36,20 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
+            var forceNonVirtualCall = _forceNonVirtualCall;
             if (_instance != null)
             {
                 _instance.Compile(ctx);
                 if (_instance.ExpressionType.IsValueType)
-                    LoadValueTypeAddress(ctx);
+                    forceNonVirtualCall = true;
             }
             foreach (var value in _arguments)
                 value.Compile(ctx);
 
-            if (!_forceNonVirtualCall && _methodInfo.IsVirtual && !_methodInfo.IsFinal)
-                ctx.Generator.Emit(OpCodes.Callvirt, _methodInfo);
+            if (!forceNonVirtualCall && _methodInfo.IsVirtual && !_methodInfo.IsFinal)
+                ctx.Generator.Emit(OpCodes.Callvirt, _methodInfo.GetBaseDefinition());
             else
                 ctx.Generator.Emit(OpCodes.Call, _methodInfo);
-        }
-
-        private void LoadValueTypeAddress(IBuildContext ctx)
-        {
-            //TODO: rethink if this can be refactored and expressed as dedicated expression...
-            var local = ctx.Generator.DeclareLocal(_instance.ExpressionType);
-            ctx.Generator.Emit(OpCodes.Stloc, local);
-            ctx.Generator.Emit(OpCodes.Ldloca, local);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

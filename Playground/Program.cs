@@ -20,7 +20,7 @@ namespace Playground
             var cb = typeBuilder.DefineTypeInitializer();
             var builder = new MethodBodyBuilder(cb);
             builder.AddStatements(
-                Expr.FieldWrite(fieldBuilder, Expr.Constant("abc")),
+                Expr.WriteField(fieldBuilder, Expr.Constant("abc")),
                 Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string) }), Expr.Constant("Hello my friend!")),
                 Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string), typeof(object) }), Expr.Constant("What a {0} day!"), Expr.Constant("beautiful")),
                 Expr.Call(typeof(Console).GetMethod("ReadKey", new Type[0])));
@@ -171,9 +171,45 @@ namespace Playground
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
-            
+
+            mb = typeBuilder.DefineMethod("loadStructField", MethodAttributes.Public);
+            mb.SetParameters(typeof(MyStruct));
+            mb.SetReturnType(typeof(string));
+
+
+            builder = new MethodBodyBuilder(mb, typeof(MyStruct));
+            builder.AddStatements(Expr.Return(Expr.ReadField(Expr.Parameter(1, typeof(MyStruct)), typeof(MyStruct).GetField("MyField"))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
+
+            mb = typeBuilder.DefineMethod("saveStructField", MethodAttributes.Public);
+            mb.SetParameters(typeof(MyStruct),typeof(string));
+            mb.SetReturnType(typeof(MyStruct));
+
+
+            builder = new MethodBodyBuilder(mb, typeof(MyStruct),typeof(string));
+            builder.AddStatements(
+                Expr.WriteField(Expr.Parameter(1,typeof(MyStruct)),typeof(MyStruct).GetField("MyField"),Expr.Parameter(2,typeof(string))),
+                Expr.Return(Expr.Parameter(1,typeof(MyStruct))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
+        }
+    }
+
+    public struct MyStruct
+    {
+        public long MyValue;
+        public string MyField;
+
+        public string MyMethod()
+        {
+            return "abc";
         }
     }
 }
