@@ -26,9 +26,13 @@ namespace CodeBuilder.Expressions
 
         private void ValidateCompatibility(Type left, Type right)
         {
+            if (!Validators.IsPrimitiveOrEnum(left) || !Validators.IsPrimitiveOrEnum(right))
+                throw new ArgumentException(string.Format("Comparison of non primitive types is not supported: Left={0}, Right={1}", left, right));
             if (CollectionHelper.Contains(_compatible, left) && CollectionHelper.Contains(_compatible, right))
                 return;
             if (CollectionHelper.Contains(_otherSupported, left) && left == right)
+                return;
+            if (left.IsEnum && right.IsEnum && right == left)
                 return;
             throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to corresponding type.", left, right));
         }

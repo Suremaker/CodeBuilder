@@ -65,5 +65,10 @@ namespace CodeBuilder.Helpers
                 HierarchyCheck(actual[i].ExpressionType, expected[i].ParameterType, "Parameter expression of type {0} does not match to type: {1}", string.Format("{0}[{1}]", paramName, i));
             }
         }
+
+        public static bool IsPrimitiveOrEnum(Type type)
+        {
+            return type.IsPrimitive || type.IsEnum;
+        }
     }
 }

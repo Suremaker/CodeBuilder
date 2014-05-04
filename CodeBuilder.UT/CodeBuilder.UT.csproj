@@ -44,12 +44,15 @@
     <Compile Include="CallExpressionTests.cs" />
     <Compile Include="ConstExpressionTests.cs" />
     <Compile Include="ConvertExpressionTests.cs" />
+    <Compile Include="EmptyExpressionTests.cs" />
     <Compile Include="EqualExpressionTests.cs" />
     <Compile Include="FieldAccessTests.cs" />
     <Compile Include="FieldReadExpressionTests.cs" />
     <Compile Include="FieldWriteExpressionTests.cs" />
+    <Compile Include="GreaterExpressionTests.cs" />
     <Compile Include="IfThenElseExpressionTests.cs" />
     <Compile Include="IfThenExpressionTests.cs" />
+    <Compile Include="LessExpressionTests.cs" />
     <Compile Include="LocalExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

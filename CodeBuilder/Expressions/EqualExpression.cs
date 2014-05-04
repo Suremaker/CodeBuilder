@@ -27,7 +27,7 @@ namespace CodeBuilder.Expressions
         {
             if (CollectionHelper.Contains(_compatible, left) && CollectionHelper.Contains(_compatible, right))
                 return;
-            if (left.IsPrimitive || left.IsEnum)
+            if (Validators.IsPrimitiveOrEnum(left))
             {
                 if (left != right)
                     throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to the same type as other.", left, right));
