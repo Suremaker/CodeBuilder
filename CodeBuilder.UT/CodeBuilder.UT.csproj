@@ -54,6 +54,9 @@
     <Compile Include="IfThenExpressionTests.cs" />
     <Compile Include="LessExpressionTests.cs" />
     <Compile Include="LocalExpressionTests.cs" />
+    <Compile Include="LoopBreakExpressionTests.cs" />
+    <Compile Include="LoopContinueExpressionTests.cs" />
+    <Compile Include="LoopExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnExpressionTests.cs" />
