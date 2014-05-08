@@ -33,8 +33,8 @@ namespace CodeBuilder.Helpers
         public static void HierarchyCheck(Type actual, Type toType, string fromToErrorMessage, string paramName)
         {
             NullCheck(actual, paramName);
-            
-            if (!IsInHierarchy(actual,toType))
+
+            if (!IsInHierarchy(actual, toType))
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
         }
 
@@ -69,6 +69,12 @@ namespace CodeBuilder.Helpers
         public static bool IsPrimitiveOrEnum(Type type)
         {
             return type.IsPrimitive || type.IsEnum;
+        }
+
+        public static void NumericPrimitiveCheck(Type type, string paramName)
+        {
+            if (!type.IsPrimitive || type == typeof(bool) || type == typeof(IntPtr) || type == typeof(UIntPtr))
+                throw new ArgumentException(string.Format("Expected numeric primitive type, got: {0}", type), paramName);
         }
     }
 }

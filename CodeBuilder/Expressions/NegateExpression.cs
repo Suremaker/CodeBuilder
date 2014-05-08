@@ -8,8 +8,8 @@ namespace CodeBuilder.Expressions
 {
     public class NegateExpression : Expression
     {
-        private static readonly Type[] _intTypes = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort),typeof(int) };
-        private static readonly Type[] _preserveTypes = new[] { typeof(long),typeof(double),typeof(float)};
+        private static readonly Type[] _intTypes = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(char) };
+        private static readonly Type[] _preserveTypes = new[] { typeof(long), typeof(double), typeof(float) };
         private readonly Expression _value;
 
         public NegateExpression(Expression value)
@@ -20,6 +20,8 @@ namespace CodeBuilder.Expressions
 
         private static Type DetermineResultType(Expression value)
         {
+            Validators.NumericPrimitiveCheck(value.ExpressionType, "value");
+
             foreach (var type in _intTypes)
                 if (type == value.ExpressionType)
                     return typeof(int);

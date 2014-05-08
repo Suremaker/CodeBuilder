@@ -22,7 +22,7 @@ namespace CodeBuilder.Expressions
                 types[i] = arguments[i].ExpressionType;
 
             var constructorInfo = type.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, types, null);
-            if (constructorInfo == null)
+            if (constructorInfo == null && (!type.IsValueType || arguments.Length > 0))
                 throw new ArgumentException(FormatMissingConstructorException(type, types), "arguments");
             _constructorInfo = constructorInfo;
             _arguments = arguments;
@@ -37,7 +37,18 @@ namespace CodeBuilder.Expressions
         {
             foreach (var argument in _arguments)
                 argument.Compile(ctx);
-            ctx.Generator.Emit(OpCodes.Newobj, _constructorInfo);
+            if (_constructorInfo == null)
+                EmitStructInit(ctx);
+            else
+                ctx.Generator.Emit(OpCodes.Newobj, _constructorInfo);
+        }
+
+        private void EmitStructInit(IBuildContext ctx)
+        {
+            var local = ctx.Generator.DeclareLocal(ExpressionType);
+            ctx.Generator.Emit(OpCodes.Ldloca, local);
+            ctx.Generator.Emit(OpCodes.Initobj, ExpressionType);
+            ctx.Generator.Emit(OpCodes.Ldloc, local);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

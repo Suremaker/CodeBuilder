@@ -185,14 +185,23 @@ namespace Playground
 
 
             mb = typeBuilder.DefineMethod("saveStructField", MethodAttributes.Public);
-            mb.SetParameters(typeof(MyStruct),typeof(string));
+            mb.SetParameters(typeof(MyStruct), typeof(string));
             mb.SetReturnType(typeof(MyStruct));
 
 
-            builder = new MethodBodyBuilder(mb, typeof(MyStruct),typeof(string));
+            builder = new MethodBodyBuilder(mb, typeof(MyStruct), typeof(string));
             builder.AddStatements(
-                Expr.WriteField(Expr.Parameter(1,typeof(MyStruct)),typeof(MyStruct).GetField("MyField"),Expr.Parameter(2,typeof(string))),
-                Expr.Return(Expr.Parameter(1,typeof(MyStruct))));
+                Expr.WriteField(Expr.Parameter(1, typeof(MyStruct)), typeof(MyStruct).GetField("MyField"), Expr.Parameter(2, typeof(string))),
+                Expr.Return(Expr.Parameter(1, typeof(MyStruct))));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
+            mb = typeBuilder.DefineMethod("createStruct", MethodAttributes.Public);
+            mb.SetReturnType(typeof(MyStruct));
+
+            builder = new MethodBodyBuilder(mb, typeof(MyStruct), typeof(string));
+            builder.AddStatements(Expr.Return(Expr.New(typeof(MyStruct))));//, Expr.Constant(32L), Expr.Constant("abcd")
 
             Console.WriteLine(builder.ToString());
             builder.Compile();
@@ -206,6 +215,12 @@ namespace Playground
     {
         public long MyValue;
         public string MyField;
+
+        public MyStruct(long myValue, string myField)
+        {
+            MyValue = myValue;
+            MyField = myField;
+        }
 
         public string MyMethod()
         {

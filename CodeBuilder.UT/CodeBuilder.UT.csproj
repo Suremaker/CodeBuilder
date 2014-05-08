@@ -57,6 +57,8 @@
     <Compile Include="LoopBreakExpressionTests.cs" />
     <Compile Include="LoopContinueExpressionTests.cs" />
     <Compile Include="LoopExpressionTests.cs" />
+    <Compile Include="NegateExpressionTests.cs" />
+    <Compile Include="NewExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnExpressionTests.cs" />
