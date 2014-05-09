@@ -2,6 +2,7 @@
 using System.Reflection.Emit;
 using System.Text;
 using CodeBuilder.Context;
+using CodeBuilder.Helpers;
 
 namespace CodeBuilder.Expressions
 {
@@ -11,9 +12,10 @@ namespace CodeBuilder.Expressions
 
         public PopExpression(Expression expression)
         {
+            Validators.NullCheck(expression, "expression");
             _expression = expression;
             if (expression.ExpressionType == typeof(void))
-                throw new ArgumentException("Expected expression to be non void type, but got void", "expression");
+                throw new ArgumentException(string.Format("Expected expression to be non void type, but got: {0}", expression.ExpressionType), "expression");
         }
 
         internal override void Compile(IBuildContext ctx)

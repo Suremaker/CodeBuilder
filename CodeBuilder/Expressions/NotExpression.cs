@@ -8,7 +8,7 @@ namespace CodeBuilder.Expressions
 {
     public class NotExpression : Expression
     {
-        private static readonly Type[] _intTypes = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort) };
+        private static readonly Type[] _intTypes = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(char) };
         private static readonly Type[] _preservedTypes = new[] { typeof(int), typeof(uint), typeof(long), typeof(ulong) };
         private readonly Expression _value;
 
@@ -28,7 +28,7 @@ namespace CodeBuilder.Expressions
                 if (type == value.ExpressionType)
                     return type;
 
-            throw new ArgumentException(string.Format("Unsupported operation for type {0}", value.ExpressionType), "value");
+            throw new ArgumentException(string.Format("Expected integral type, got: {0}", value.ExpressionType), "value");
         }
 
         internal override void Compile(IBuildContext ctx)
