@@ -83,9 +83,42 @@ namespace CodeBuilder.UT
             Assert.That(builder.ToString(), Is.EqualTo("NF"));
         }
 
+        [Test]
+        public void Should_allow_to_use_catched_exception()
+        {
+            var local = Expr.DeclareLocalVar(typeof(Exception), "e");
+            var func = CreateFunc<Exception>(
+                Expr.TryCatch(Expr.Throw(Expr.New(typeof(InvalidOperationException), Expr.Constant("abc"))), new CatchBlock(typeof(InvalidOperationException), local, Expr.Empty())),
+                Expr.Return(Expr.ReadLocal(local)));
+            Assert.That(func().Message, Is.EqualTo("abc"));
+        }
+
+        [Test]
+        public void Should_not_allow_passing_null_to_CatchBlock()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => new CatchBlock(null, Expr.Empty()));
+            Assert.That(ex.Message, Is.StringContaining("exceptionType"));
+
+            ex = Assert.Throws<ArgumentNullException>(() => new CatchBlock(typeof(Exception), null));
+            Assert.That(ex.Message, Is.StringContaining("catchExpression"));
+
+            ex = Assert.Throws<ArgumentNullException>(() => new CatchBlock(typeof(Exception), null, Expr.Empty()));
+            Assert.That(ex.Message, Is.StringContaining("exceptionVariable"));
+        }
+
+        [Test]
+        public void Should_not_allow_passing_wrong_exception_types_to_CatchBlock()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new CatchBlock(typeof(object), Expr.Empty()));
+            Assert.That(ex.Message, Is.StringContaining("Provided type System.Object has to be deriving from System.Exception"));
+
+            ex = Assert.Throws<ArgumentException>(() => new CatchBlock(typeof(Exception), Expr.DeclareLocalVar(typeof(InvalidOperationException), "e"), Expr.Empty()));
+            Assert.That(ex.Message, Is.StringContaining("Unable to assign exception of type System.Exception to local of type System.InvalidOperationException"));
+        }
+
         Expression ConstChar(char c)
         {
-            return Expr.Convert(Expr.Constant(c), typeof (char));
+            return Expr.Convert(Expr.Constant(c), typeof(char));
         }
     }
 }

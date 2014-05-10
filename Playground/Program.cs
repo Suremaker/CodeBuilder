@@ -206,6 +206,21 @@ namespace Playground
             Console.WriteLine(builder.ToString());
             builder.Compile();
 
+
+            mb = typeBuilder.DefineMethod("catchException", MethodAttributes.Public);
+            mb.SetReturnType(typeof(Exception));
+
+            builder = new MethodBodyBuilder(mb);
+            var local = Expr.DeclareLocalVar(typeof(Exception), "e");
+            builder.AddStatements(
+                Expr.TryCatch(
+                    Expr.Throw(Expr.New(typeof(InvalidOperationException), Expr.Constant("abc"))),
+                    new CatchBlock(typeof(InvalidOperationException), local, Expr.Empty())),
+                Expr.Return(Expr.ReadLocal(local)));
+
+            Console.WriteLine(builder.ToString());
+            builder.Compile();
+
             typeBuilder.CreateType();
             asmBuilder.Save(fileName);
         }

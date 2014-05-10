@@ -63,6 +63,7 @@
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="PopExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RethrowExpressionTests.cs" />
     <Compile Include="ReturnExpressionTests.cs" />
     <Compile Include="TryCatchFinallyExpressionTests.cs" />
   </ItemGroup>
