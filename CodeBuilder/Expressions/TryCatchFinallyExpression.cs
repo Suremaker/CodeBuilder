@@ -17,7 +17,7 @@ namespace CodeBuilder.Expressions
             Validators.NullCheck(tryExpression, "tryExpression");
             Validators.NullCollectionElementsCheck(catchBlocks, "catchBlocks");
             if (catchBlocks.Length == 0 && finallyExpression == null)
-                throw new ArgumentException("Try-Catch block has to have finally block or at least one catch block");
+                throw new ArgumentException("Try-Catch-Finally block has to have finally block or at least one catch block");
             ValidateOrderOfCatchBlocks(catchBlocks);
 
             _tryExpression = ExprHelper.PopIfNeeded(tryExpression);
