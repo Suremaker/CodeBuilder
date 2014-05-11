@@ -11,6 +11,7 @@ namespace CodeBuilder.Context
         bool IsInExceptionBlock { get; }
         bool IsInFinallyBlock { get; }
         bool IsInCatchBlock { get; }
+        bool IsInValueBlock { get; }
         void SetExceptionBlock(Label label);
         void SetFinallyBlock(Label label);
         void ResetFinallyBlock(Label label);
@@ -22,5 +23,7 @@ namespace CodeBuilder.Context
         void SetLoopData(LoopData data);
         void ResetLoopData(LoopData data);
         LoopData GetLoopData();
+        void SetValueBlock();
+        void ResetValueBlock();
     }
 }

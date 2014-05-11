@@ -47,10 +47,10 @@ namespace CodeBuilder.Helpers
                 throw new ArgumentException(string.Format(fromToErrorMessage, actual, toType), paramName);
         }
 
-        public static void PrimitiveOrClassCheck(Type type, string paramName)
+        public static void PrimitiveOrReferenceType(Type type, string paramName)
         {
-            if (!type.IsPrimitive && !type.IsClass)
-                throw new ArgumentException(string.Format("Expected expression type to be primitive or class, got: {0}", type), paramName);
+            if (!type.IsPrimitive && !type.IsClass && !type.IsInterface)
+                throw new ArgumentException(string.Format("Expected primitive or reference type, got: {0}", type), paramName);
         }
 
         public static void ParameterCheck(MethodBase methodInfo, Expression[] actual, string paramName)
@@ -75,6 +75,12 @@ namespace CodeBuilder.Helpers
         {
             if (!type.IsPrimitive || type == typeof(bool) || type == typeof(IntPtr) || type == typeof(UIntPtr))
                 throw new ArgumentException(string.Format("Expected numeric primitive type, got: {0}", type), paramName);
+        }
+
+        public static void ReferenceTypeCheck(Type type, string paramName)
+        {
+            if (!type.IsClass&&!type.IsInterface)
+                throw new ArgumentException(string.Format("Expected reference type, got: {0}", type), paramName);
         }
     }
 }

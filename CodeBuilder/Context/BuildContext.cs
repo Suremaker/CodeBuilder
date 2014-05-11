@@ -11,6 +11,8 @@ namespace CodeBuilder.Context
         private readonly Stack<Label> _catchBlocks = new Stack<Label>();
         private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
         private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
+        private int _inValueBlock;
+
         public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, bool isSymbolInfoSupported = true)
         {
             Parameters = parameters;
@@ -25,6 +27,7 @@ namespace CodeBuilder.Context
         public bool IsInExceptionBlock { get { return _exceptionBlocks.Count > 0; } }
         public bool IsInFinallyBlock { get { return _finallyBlocks.Count > 0; } }
         public bool IsInCatchBlock { get { return _catchBlocks.Count > 0; } }
+        public bool IsInValueBlock { get { return _inValueBlock > 0; } }
         public bool IsSymbolInfoSupported { get; private set; }
 
         public void SetExceptionBlock(Label label)
@@ -101,6 +104,16 @@ namespace CodeBuilder.Context
         public LoopData GetLoopData()
         {
             return (_loopData.Count > 0) ? _loopData.Peek() : null;
+        }
+
+        public void SetValueBlock()
+        {
+            _inValueBlock += 1;
+        }
+
+        public void ResetValueBlock()
+        {
+            _inValueBlock -= 1;
         }
 
         private void Reset<T>(Stack<T> stack, T value, string errorMessage)

@@ -14,7 +14,7 @@ namespace CodeBuilder.Expressions
         {
             Validators.NullCheck(predicate, "predicate");
             Validators.NullCheck(thenExpression, "thenExpression");
-            Validators.PrimitiveOrClassCheck(predicate.ExpressionType, "predicate");
+            Validators.PrimitiveOrReferenceType(predicate.ExpressionType, "predicate");
             _predicate = predicate;
             _thenExpression = ExprHelper.PopIfNeeded(thenExpression);
         }

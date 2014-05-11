@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Reflection;
 using CodeBuilder.Expressions;
+using CodeBuilder.Helpers;
 
 namespace CodeBuilder
 {
     public static class Expr
     {
+        public static Expression Constant(bool value) { return new ConstExpression(value); }
+        public static Expression Constant(byte value) { return new ConstExpression(value); }
         public static ConstExpression Constant(string value) { return new ConstExpression(value); }
         public static ConstExpression Constant(int value) { return new ConstExpression(value); }
         public static ConstExpression Constant(long value) { return new ConstExpression(value); }
         public static ConstExpression Constant(float value) { return new ConstExpression(value); }
         public static ConstExpression Constant(double value) { return new ConstExpression(value); }
-
+        public static Expression Constant(Type value) { return new ConstExpression(value); }
         public static FieldWriteExpression WriteField(FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(null, fieldInfo, value); }
         public static FieldWriteExpression WriteField(Expression instance, FieldInfo fieldInfo, Expression value) { return new FieldWriteExpression(instance, fieldInfo, value); }
         public static ReturnExpression Return() { return new ReturnExpression(); }
@@ -22,8 +25,13 @@ namespace CodeBuilder
         /// It can be used to implement base calls.
         /// </summary>
         public static CallExpression CallExact(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo, arguments, true); }
-        public static CallExpression Call(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo,arguments); }
+        public static CallExpression Call(Expression instance, MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(instance, methodInfo, arguments); }
         public static CallExpression Call(MethodInfo methodInfo, params Expression[] arguments) { return new CallExpression(null, methodInfo, arguments); }
+
+        public static CallExpression Call(Expression instance, string methodName, Type[] genericArguments, params Expression[] arguments) { return new CallExpression(instance, MemberHelper.FindMethod(instance, methodName, genericArguments, arguments), arguments); }
+        public static CallExpression Call(Type methodOwner, string methodName, Type[] genericArguments, params Expression[] arguments) { return new CallExpression(null, MemberHelper.FindMethod(methodOwner, methodName, genericArguments, arguments), arguments); }
+        public static CallExpression Call(Expression instance, string methodName, params Expression[] arguments) { return new CallExpression(instance, MemberHelper.FindMethod(instance, methodName, null, arguments), arguments); }
+        public static CallExpression Call(Type methodOwner, string methodName, params Expression[] arguments) { return new CallExpression(null, MemberHelper.FindMethod(methodOwner, methodName, null, arguments), arguments); }
 
         public static PopExpression Pop(Expression expression) { return new PopExpression(expression); }
 
@@ -31,6 +39,7 @@ namespace CodeBuilder
 
         public static FieldReadExpression ReadField(FieldInfo fieldInfo) { return new FieldReadExpression(null, fieldInfo); }
         public static FieldReadExpression ReadField(Expression instance, FieldInfo fieldInfo) { return new FieldReadExpression(instance, fieldInfo); }
+        public static FieldReadExpression ReadField(Expression instance, string fieldName) { return new FieldReadExpression(instance, MemberHelper.FindField(instance, fieldName)); }
 
         public static ParameterExpression Parameter(ushort parameterId, Type type) { return new ParameterExpression(parameterId, type); }
 
@@ -79,10 +88,29 @@ namespace CodeBuilder
         public static LoopContinueExpression LoopContinue() { return new LoopContinueExpression(); }
 
         public static BlockExpression Block(params Expression[] expressions) { return new BlockExpression(expressions); }
+        public static ValueBlockExpression ValueBlock(Type valueType, params Expression[] expressions) { return new ValueBlockExpression(valueType, expressions); }
         public static AddExpression Add(Expression left, Expression right) { return new AddExpression(left, right); }
         public static AddExpression AddChecked(Expression left, Expression right) { return new AddExpression(left, right, true); }
         public static LessExpression Less(Expression left, Expression right) { return new LessExpression(left, right); }
         public static GreaterExpression Greater(Expression left, Expression right) { return new GreaterExpression(left, right); }
         public static EqualExpression Equal(Expression left, Expression right) { return new EqualExpression(left, right); }
+        public static NullExpression Null(Type type) { return new NullExpression(type); }
+
+        public static Expression PropertyRead(Expression instance, PropertyInfo property)
+        {
+            return Call(instance, property.GetGetMethod(true));
+        }
+
+        public static Expression PropertyRead(Expression instance, string propertyName)
+        {
+            return Call(instance, MemberHelper.FindProperty(instance, propertyName).GetGetMethod(true));
+        }
+
+        public static Expression PropertyRead(PropertyInfo property)
+        {
+            return Call(property.GetGetMethod(true));
+        }
+
+
     }
 }

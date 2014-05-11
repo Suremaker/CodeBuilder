@@ -89,6 +89,7 @@ namespace CodeBuilder.UT
         {
             AssertCounter<object>(null, false);
             AssertCounter<object>(new object(), true);
+            AssertCounter<IComparable>("str", true);
             AssertCounter<Counter>(new Counter(), true);
             AssertCounter<Counter>(null, false);
         }
@@ -97,7 +98,7 @@ namespace CodeBuilder.UT
         public void Should_not_allow_value_types_as_predicates()
         {
             var ex = Assert.Throws<ArgumentException>(() => Expr.IfThenElse(Expr.Parameter(0, typeof(DateTime)), Expr.Empty(), Expr.Empty()));
-            Assert.That(ex.Message, Is.StringContaining("Expected expression type to be primitive or class, got: System.DateTime"));
+            Assert.That(ex.Message, Is.StringContaining("Expected primitive or reference type, got: System.DateTime"));
         }
 
         [Test]

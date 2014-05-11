@@ -16,7 +16,7 @@ namespace CodeBuilder.Expressions
         {
             Validators.NullCheck(predicate, "predicate");
             Validators.NullCheck(elseExpression, "elseExpression");
-            Validators.PrimitiveOrClassCheck(predicate.ExpressionType, "predicate");
+            Validators.PrimitiveOrReferenceType(predicate.ExpressionType, "predicate");
 
             if (thenExpression.ExpressionType != typeof(void))
                 Validators.HierarchyCheck(elseExpression.ExpressionType, thenExpression.ExpressionType, "Else expression type {0} is not assignable to then expression type {1}", "elseExpression");

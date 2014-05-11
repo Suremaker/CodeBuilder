@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace CodeBuilder.UT
 {
@@ -33,6 +34,24 @@ namespace CodeBuilder.UT
         public void StringTypeTest()
         {
             Assert.That(Expr.Constant("abc").ExpressionType, Is.EqualTo(typeof(string)));
+        }
+
+        [Test]
+        public void TypeTypeTest()
+        {
+            Assert.That(Expr.Constant(typeof(object)).ExpressionType, Is.EqualTo(typeof(Type)));
+        }
+
+        [Test]
+        public void BooleanTypeTest()
+        {
+            Assert.That(Expr.Constant(true).ExpressionType, Is.EqualTo(typeof(bool)));
+        }
+
+        [Test]
+        public void ByteTypeTest()
+        {
+            Assert.That(Expr.Constant((byte)55).ExpressionType, Is.EqualTo(typeof(byte)));
         }
 
         [Test]
@@ -98,11 +117,34 @@ namespace CodeBuilder.UT
         }
 
         [Test]
+        public void Should_return_const_type()
+        {
+            var func = CreateFunc<Type>(Expr.Return(Expr.Constant(typeof(byte))));
+            Assert.That(func(), Is.EqualTo(typeof(byte)));
+        }
+
+        [Test]
         [TestCase("abc")]
         [TestCase(null)]
         public void Should_return_const_string(string value)
         {
             var func = CreateFunc<string>(Expr.Return(Expr.Constant(value)));
+            Assert.That(func(), Is.EqualTo(value));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Should_return_const_bool(bool value)
+        {
+            var func = CreateFunc<bool>(Expr.Return(Expr.Constant(value)));
+            Assert.That(func(), Is.EqualTo(value));
+        }
+
+        [Test]
+        public void Should_return_const_byte([Range(0, 10)]byte value)
+        {
+            var func = CreateFunc<byte>(Expr.Return(Expr.Constant(value)));
             Assert.That(func(), Is.EqualTo(value));
         }
     }

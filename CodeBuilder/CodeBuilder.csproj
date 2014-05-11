@@ -62,14 +62,17 @@
     <Compile Include="Expressions\LoopExpression.cs" />
     <Compile Include="Expressions\NegateExpression.cs" />
     <Compile Include="Expressions\NotExpression.cs" />
+    <Compile Include="Expressions\NullExpression.cs" />
     <Compile Include="Expressions\RethrowExpression.cs" />
     <Compile Include="Expressions\ThrowExpression.cs" />
     <Compile Include="Expressions\TryCatchFinallyExpression.cs" />
+    <Compile Include="Expressions\ValueBlockExpression.cs" />
     <Compile Include="Expressions\ValueOnStackExpression.cs" />
     <Compile Include="Expressions\ValueTypePointerExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\ExprHelper.cs" />
+    <Compile Include="Helpers\MemberHelper.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="Expressions\IfThenExpression.cs" />

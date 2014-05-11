@@ -60,6 +60,7 @@
     <Compile Include="NegateExpressionTests.cs" />
     <Compile Include="NewExpressionTests.cs" />
     <Compile Include="NotExpressionTests.cs" />
+    <Compile Include="NullExpressionTests.cs" />
     <Compile Include="ParameterExpressionTests.cs" />
     <Compile Include="PopExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

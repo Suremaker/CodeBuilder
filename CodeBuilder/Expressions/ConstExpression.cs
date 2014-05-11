@@ -1,6 +1,8 @@
-﻿using System.Reflection.Emit;
+﻿using System;
+using System.Reflection.Emit;
 using System.Text;
 using CodeBuilder.Context;
+using CodeBuilder.Helpers;
 
 namespace CodeBuilder.Expressions
 {
@@ -45,6 +47,28 @@ namespace CodeBuilder.Expressions
             _action = CompileStr;
         }
 
+        public ConstExpression(Type value)
+            : base(typeof(Type))
+        {
+            Validators.NullCheck(value, "value");
+            _value = value;
+            _action = CompileType;
+        }
+
+        public ConstExpression(byte value)
+            : base(typeof(byte))
+        {
+            _value = (int)value;
+            _action = CompileInt;
+        }
+
+        public ConstExpression(bool value)
+            : base(typeof(bool))
+        {
+            _value = value ? 1 : 0;
+            _action = CompileInt;
+        }
+
         private void CompileStr(IBuildContext ctx)
         {
             var value = (string)_value;
@@ -57,6 +81,12 @@ namespace CodeBuilder.Expressions
         private void CompileInt(IBuildContext ctx)
         {
             EmitIntCode(ctx, (int)_value);
+        }
+
+        private void CompileType(IBuildContext ctx)
+        {
+            ctx.Generator.Emit(OpCodes.Ldtoken, (Type)_value);
+            ctx.Generator.Emit(OpCodes.Call, typeof(Type).GetMethod("GetTypeFromHandle"));
         }
 
         private void CompileLong(IBuildContext ctx)
