@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class EmptyExpressionTests : BuilderTestBase

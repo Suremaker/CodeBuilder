@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Text;
 using CodeBuilder.Expressions;
 using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class TryCatchFinallyExpressionTests : BuilderTestBase

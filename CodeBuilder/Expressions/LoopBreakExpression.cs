@@ -17,7 +17,7 @@ namespace CodeBuilder.Expressions
             if (ctx.IsInValueBlock)
                 throw new InvalidOperationException("Break expression is forbidden in value blocks");
             if (ctx.IsInExceptionBlock)
-                throw new NotSupportedException("Break expression in try-catch block is not supported yet");
+                throw new NotSupportedException("Break expression in try-catch blocks is not supported");
             ctx.Generator.Emit(OpCodes.Br, data.BreakLabel);
         }
 

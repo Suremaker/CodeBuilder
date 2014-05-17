@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class ConvertExpressionTests : BuilderTestBase

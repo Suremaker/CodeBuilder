@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Reflection.Emit;
 using CodeBuilder.Context;
 using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class PopExpressionTests : BuilderTestBase

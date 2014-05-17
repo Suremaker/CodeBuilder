@@ -39,34 +39,35 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlockExpressionTests.cs" />
     <Compile Include="BuilderTestBase.cs" />
-    <Compile Include="CallExpressionTests.cs" />
-    <Compile Include="ConstExpressionTests.cs" />
-    <Compile Include="ConvertExpressionTests.cs" />
-    <Compile Include="EmptyExpressionTests.cs" />
-    <Compile Include="EqualExpressionTests.cs" />
-    <Compile Include="FieldAccessTests.cs" />
-    <Compile Include="FieldReadExpressionTests.cs" />
-    <Compile Include="FieldWriteExpressionTests.cs" />
-    <Compile Include="GreaterExpressionTests.cs" />
-    <Compile Include="IfThenElseExpressionTests.cs" />
-    <Compile Include="IfThenExpressionTests.cs" />
-    <Compile Include="LessExpressionTests.cs" />
-    <Compile Include="LocalExpressionTests.cs" />
-    <Compile Include="LoopBreakExpressionTests.cs" />
-    <Compile Include="LoopContinueExpressionTests.cs" />
-    <Compile Include="LoopExpressionTests.cs" />
-    <Compile Include="NegateExpressionTests.cs" />
-    <Compile Include="NewExpressionTests.cs" />
-    <Compile Include="NotExpressionTests.cs" />
-    <Compile Include="NullExpressionTests.cs" />
-    <Compile Include="ParameterExpressionTests.cs" />
-    <Compile Include="PopExpressionTests.cs" />
+    <Compile Include="Expressions\BlockExpressionTests.cs" />
+    <Compile Include="Expressions\CallExpressionTests.cs" />
+    <Compile Include="Expressions\ConstExpressionTests.cs" />
+    <Compile Include="Expressions\ConvertExpressionTests.cs" />
+    <Compile Include="Expressions\EmptyExpressionTests.cs" />
+    <Compile Include="Expressions\EqualExpressionTests.cs" />
+    <Compile Include="Expressions\FieldAccessTests.cs" />
+    <Compile Include="Expressions\FieldReadExpressionTests.cs" />
+    <Compile Include="Expressions\FieldWriteExpressionTests.cs" />
+    <Compile Include="Expressions\GreaterExpressionTests.cs" />
+    <Compile Include="Expressions\IfThenElseExpressionTests.cs" />
+    <Compile Include="Expressions\IfThenExpressionTests.cs" />
+    <Compile Include="Expressions\LessExpressionTests.cs" />
+    <Compile Include="Expressions\LocalExpressionTests.cs" />
+    <Compile Include="Expressions\LoopBreakExpressionTests.cs" />
+    <Compile Include="Expressions\LoopContinueExpressionTests.cs" />
+    <Compile Include="Expressions\LoopExpressionTests.cs" />
+    <Compile Include="Expressions\NegateExpressionTests.cs" />
+    <Compile Include="Expressions\NewExpressionTests.cs" />
+    <Compile Include="Expressions\NotExpressionTests.cs" />
+    <Compile Include="Expressions\NullExpressionTests.cs" />
+    <Compile Include="Expressions\ParameterExpressionTests.cs" />
+    <Compile Include="Expressions\PopExpressionTests.cs" />
+    <Compile Include="Expressions\RethrowExpressionTests.cs" />
+    <Compile Include="Expressions\ReturnExpressionTests.cs" />
+    <Compile Include="Expressions\TryCatchFinallyExpressionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RethrowExpressionTests.cs" />
-    <Compile Include="ReturnExpressionTests.cs" />
-    <Compile Include="TryCatchFinallyExpressionTests.cs" />
+    <Compile Include="Scenarios\ScopeChangeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeBuilder\CodeBuilder.csproj">
@@ -79,6 +80,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

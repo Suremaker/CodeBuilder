@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class FieldWriteExpressionTests : FieldAccessTests
@@ -39,7 +39,7 @@ namespace CodeBuilder.UT
         public void Should_not_allow_instance_of_wrong_type()
         {
             var ex = Assert.Throws<ArgumentException>(() => Expr.WriteField(Expr.Constant("abc"), _structLocal, Expr.Constant(2)));
-            Assert.That(ex.Message, Is.StringContaining("Instance expression of type System.String does not match to type: CodeBuilder.UT.FieldAccessTests+TestStruct"));
+            Assert.That(ex.Message, Is.StringContaining("Instance expression of type System.String does not match to type: CodeBuilder.UT.Expressions.FieldAccessTests+TestStruct"));
         }
 
         [Test]

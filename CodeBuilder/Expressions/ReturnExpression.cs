@@ -44,7 +44,7 @@ namespace CodeBuilder.Expressions
             if (ctx.IsInValueBlock)
                 throw new InvalidOperationException("Return expression is forbidden in value blocks");
             if (ctx.IsInExceptionBlock)
-                throw new NotSupportedException("Return expression in try-catch blocks is not supported yet");
+                throw new NotSupportedException("Return expression in try-catch blocks is not supported");
         }
 
         private void ValidateReturnType(IBuildContext ctx)

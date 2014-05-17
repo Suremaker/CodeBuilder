@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using CodeBuilder.Expressions;
 using NUnit.Framework;
 
-namespace CodeBuilder.UT
+namespace CodeBuilder.UT.Expressions
 {
     [TestFixture]
     public class NewExpressionTests : BuilderTestBase
@@ -95,14 +95,14 @@ namespace CodeBuilder.UT
         public void Should_not_allow_creating_struct_if_no_parameter_constructor_is_present()
         {
             var ex = Assert.Throws<ArgumentException>(() => Expr.New(typeof (SomeStruct), Expr.Constant("abc")));
-            Assert.That(ex.Message, Is.StringContaining("No matching constructor found for type CodeBuilder.UT.NewExpressionTests+SomeStruct with parameters: [System.String]"));
+            Assert.That(ex.Message, Is.StringContaining("No matching constructor found for type CodeBuilder.UT.Expressions.NewExpressionTests+SomeStruct with parameters: [System.String]"));
         }
 
         [Test]
         public void Should_not_allow_creating_class_if_no_specified_constructor_is_present()
         {
             var ex = Assert.Throws<ArgumentException>(() => Expr.New(typeof(SomeClass), Expr.Constant("abc")));
-            Assert.That(ex.Message, Is.StringContaining("No matching constructor found for type CodeBuilder.UT.NewExpressionTests+SomeClass with parameters: [System.String]"));
+            Assert.That(ex.Message, Is.StringContaining("No matching constructor found for type CodeBuilder.UT.Expressions.NewExpressionTests+SomeClass with parameters: [System.String]"));
         }
 
         private static T AssertInstance<T>(NewExpression newExpression)
