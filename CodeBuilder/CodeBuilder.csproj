@@ -37,7 +37,10 @@
     <Compile Include="CatchBlock.cs" />
     <Compile Include="Context\BuildContext.cs" />
     <Compile Include="Context\IBuildContext.cs" />
+    <Compile Include="Context\JumpLabel.cs" />
     <Compile Include="Context\LoopData.cs" />
+    <Compile Include="Context\Scope.cs" />
+    <Compile Include="Context\ScopeChangeException.cs" />
     <Compile Include="Expressions\AddExpression.cs" />
     <Compile Include="Expressions\BlockExpression.cs" />
     <Compile Include="Expressions\CallExpression.cs" />

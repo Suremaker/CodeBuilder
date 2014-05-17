@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeBuilder.Context;
 using NUnit.Framework;
 
 namespace CodeBuilder.UT.Scenarios
@@ -7,7 +8,6 @@ namespace CodeBuilder.UT.Scenarios
     public class ScopeChangeTests : BuilderTestBase
     {
         [Test]
-        [Ignore("WIP")]
         public void Should_allow_inner_loop_with_break_and_continue_in_value_block()
         {
             var i = Expr.DeclareLocalVar(typeof(int), "i");
@@ -32,146 +32,130 @@ namespace CodeBuilder.UT.Scenarios
         [Test]
         public void Should_not_allow_leave_value_block_with_loop_break()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.ValueBlock(typeof(int),
                     Expr.LoopBreak(),
                     Expr.Constant(1)))));
-            Assert.That(ex.Message, Is.EqualTo("Break expression is forbidden in value blocks"));
+            Assert.That(ex.Message, Is.EqualTo("Loop break expression is forbidden in value block scope"));
         }
 
         [Test]
         public void Should_not_allow_leave_value_block_with_loop_continue()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.ValueBlock(typeof(int),
                     Expr.LoopContinue(),
                     Expr.Constant(1)))));
-            Assert.That(ex.Message, Is.EqualTo("Continue expression is forbidden in value blocks"));
+            Assert.That(ex.Message, Is.EqualTo("Loop continue expression is forbidden in value block scope"));
         }
 
         [Test]
         public void Should_not_allow_leave_value_block_with_return()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.ValueBlock(typeof(int),
                     Expr.Return(),
                     Expr.Constant(1))));
-            Assert.That(ex.Message, Is.EqualTo("Return expression is forbidden in value blocks"));
+            Assert.That(ex.Message, Is.EqualTo("Return expression is forbidden in value block scope"));
         }
 
         [Test]
-        [Ignore("WIP")]
-        public void Should_allow_inner_loop_with_break_in_catch_block()
+        public void Should_allow_inner_loop_with_break_continue_in_catch_block()
         {
-            var result = Expr.DeclareLocalVar(typeof(string), "r");
-            var func = CreateFunc<string>(
+            var result = Expr.DeclareLocalVar(typeof(int), "r");
+            var func = CreateFunc<int>(
+                Expr.WriteLocal(result, Expr.Constant(0)),
                 Expr.TryCatch(
-                    Expr.Throw(Expr.New(typeof(Exception))),
+                        Expr.Throw(Expr.New(typeof(Exception))),
                     new CatchBlock(Expr.Block(
                         Expr.Loop(Expr.Block(
-                            Expr.WriteLocal(result, Expr.Constant("abc")),
+                            Expr.WriteLocal(result, Expr.Add(Expr.ReadLocal(result), Expr.Constant(1))),
+                            Expr.IfThen(
+                                Expr.Less(Expr.ReadLocal(result), Expr.Constant(2)),
+                                Expr.LoopContinue()),
                             Expr.LoopBreak()))))),
                 Expr.Return(Expr.ReadLocal(result)));
 
-            Assert.That(func(), Is.EqualTo("abc"));
-        }
-
-        [Test]
-        [Ignore("WIP")]
-        public void Should_allow_inner_loop_with_continue_in_catch_block()
-        {
-            var result = Expr.DeclareLocalVar(typeof(string), "r");
-            var func = CreateFunc<string>(
-                Expr.TryCatch(
-                    Expr.IfThen(Expr.Equal(Expr.ReadLocal(result),
-                        Expr.Null(typeof(string))),
-                        Expr.Throw(Expr.New(typeof(Exception)))),
-                    new CatchBlock(Expr.Block(
-                        Expr.Loop(Expr.Block(
-                            Expr.WriteLocal(result, Expr.Constant("abc")),
-                            Expr.LoopContinue()))))),
-                Expr.Return(Expr.ReadLocal(result)));
-
-            Assert.That(func(), Is.EqualTo("abc"));
+            Assert.That(func(), Is.EqualTo(2));
         }
 
         [Test]
         public void Should_not_allow_to_leave_catch_block_with_loop_break()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.TryCatch(
                     Expr.Throw(Expr.New(typeof(Exception))),
                     new CatchBlock(Expr.LoopBreak())))));
-            Assert.That(ex.Message, Is.EqualTo("Break expression in try-catch blocks is not supported"));
+            Assert.That(ex.Message, Is.EqualTo("Loop break expression is forbidden in catch block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_try_block_with_loop_break()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.TryCatch(
                     Expr.LoopBreak(),
                     new CatchBlock(Expr.Empty())))));
-            Assert.That(ex.Message, Is.EqualTo("Break expression in try-catch blocks is not supported"));
+            Assert.That(ex.Message, Is.EqualTo("Loop break expression is forbidden in try block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_finally_block_with_loop_break()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
-                Expr.TryCatch(
+                Expr.TryFinally(
                     Expr.Throw(Expr.New(typeof(Exception))),
-                    new CatchBlock(Expr.LoopBreak())))));
-            Assert.That(ex.Message, Is.EqualTo("Break expression in try-catch blocks is not supported"));
+                    Expr.LoopBreak()))));
+            Assert.That(ex.Message, Is.EqualTo("Loop break expression is forbidden in finally block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_try_block_with_loop_continue()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.TryCatch(
                     Expr.LoopContinue(),
                     new CatchBlock(Expr.Empty())))));
-            Assert.That(ex.Message, Is.EqualTo("Continue expression in try-catch blocks is not supported"));
+            Assert.That(ex.Message, Is.EqualTo("Loop continue expression is forbidden in try block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_finally_block_with_loop_continue()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
-                Expr.TryCatch(
+                Expr.TryFinally(
                     Expr.Throw(Expr.New(typeof(Exception))),
-                    new CatchBlock(Expr.LoopContinue())))));
-            Assert.That(ex.Message, Is.EqualTo("Continue expression in try-catch blocks is not supported"));
+                    Expr.LoopContinue()))));
+            Assert.That(ex.Message, Is.EqualTo("Loop continue expression is forbidden in finally block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_try_block_with_return()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
                 Expr.TryCatch(
                     Expr.Return(),
                     new CatchBlock(Expr.Empty())))));
-            Assert.That(ex.Message, Is.EqualTo("Return expression in try-catch blocks is not supported"));
+            Assert.That(ex.Message, Is.EqualTo("Return expression is forbidden in try block scope"));
         }
 
         [Test]
         public void Should_not_allow_to_leave_finally_block_with_return()
         {
-            var ex = Assert.Throws<NotSupportedException>(() => CreateAction(
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(
                 Expr.Loop(
-                Expr.TryCatch(
+                Expr.TryFinally(
                     Expr.Throw(Expr.New(typeof(Exception))),
-                    new CatchBlock(Expr.Return())))));
-            Assert.That(ex.Message, Is.EqualTo("Return expression in try-catch blocks is not supported"));
+                    Expr.Return()))));
+            Assert.That(ex.Message, Is.EqualTo("Return expression is forbidden in finally block scope"));
         }
     }
 }

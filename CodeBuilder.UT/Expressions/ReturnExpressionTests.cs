@@ -1,4 +1,5 @@
 using System;
+using CodeBuilder.Context;
 using NUnit.Framework;
 
 namespace CodeBuilder.UT.Expressions
@@ -66,8 +67,8 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_not_allow_returning_from_finally_block()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => CreateAction(Expr.TryFinally(Expr.Empty(), Expr.Return())));
-            Assert.That(ex.Message, Is.StringContaining("Return expression is forbidden in finally blocks"));
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(Expr.TryFinally(Expr.Empty(), Expr.Return())));
+            Assert.That(ex.Message, Is.StringContaining("Return expression is forbidden in finally block scope"));
         }
 
         [Test]

@@ -6,12 +6,9 @@ namespace CodeBuilder.Context
 {
     class BuildContext : IBuildContext
     {
-        private readonly Stack<Label> _exceptionBlocks = new Stack<Label>();
-        private readonly Stack<Label> _finallyBlocks = new Stack<Label>();
-        private readonly Stack<Label> _catchBlocks = new Stack<Label>();
+        private readonly Stack<Scope> _scopes = new Stack<Scope>();
         private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
         private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
-        private int _inValueBlock;
 
         public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, bool isSymbolInfoSupported = true)
         {
@@ -19,38 +16,32 @@ namespace CodeBuilder.Context
             IsSymbolInfoSupported = isSymbolInfoSupported;
             ReturnType = returnType;
             Generator = generator;
+            _scopes.Push(new MethodBodyScope());
         }
 
         public Type ReturnType { get; private set; }
         public Type[] Parameters { get; private set; }
         public ILGenerator Generator { get; private set; }
-        public bool IsInExceptionBlock { get { return _exceptionBlocks.Count > 0; } }
-        public bool IsInFinallyBlock { get { return _finallyBlocks.Count > 0; } }
-        public bool IsInCatchBlock { get { return _catchBlocks.Count > 0; } }
-        public bool IsInValueBlock { get { return _inValueBlock > 0; } }
         public bool IsSymbolInfoSupported { get; private set; }
-
-        public void SetExceptionBlock(Label label)
+        public bool IsInScope<TScope>() where TScope : Scope
         {
-            _exceptionBlocks.Push(label);
+            var scope = CurrentScope;
+            while (scope != null)
+            {
+                if (scope is TScope) return true;
+                scope = scope.Outer;
+            }
+            return false;
         }
 
-        public void SetFinallyBlock(Label label)
+        public JumpLabel DefineLabel()
         {
-            _finallyBlocks.Push(label);
+            return new JumpLabel(this);
         }
 
-        public void ResetFinallyBlock(Label label)
-        {
-            Reset(_finallyBlocks, label, "Trying to reset finally block for wrong label!");
-        }
+        public Scope CurrentScope { get { return _scopes.Peek(); } }
 
-        public void ResetExceptionBlock(Label label)
-        {
-            Reset(_exceptionBlocks, label, "Trying to reset exception block for wrong label!");
-        }
-
-        public LocalBuilder GetOrDeclareLocalIndex(LocalVariable variable)
+        public LocalBuilder GetOrDeclareLocal(LocalVariable variable)
         {
             LocalBuilder value;
             if (_localVars.TryGetValue(variable, out value))
@@ -73,22 +64,12 @@ namespace CodeBuilder.Context
             return local;
         }
 
-        public LocalBuilder GetLocalIndex(LocalVariable variable)
+        public LocalBuilder GetLocal(LocalVariable variable)
         {
             LocalBuilder value;
             if (_localVars.TryGetValue(variable, out value))
                 return value;
             throw new InvalidOperationException(string.Format("Uninitialized local variable access: {0}", variable));
-        }
-
-        public void SetCatchBlock(Label label)
-        {
-            _catchBlocks.Push(label);
-        }
-
-        public void ResetCatchBlock(Label label)
-        {
-            Reset(_catchBlocks, label, "Trying to reset catch block for wrong label!");
         }
 
         public void SetLoopData(LoopData data)
@@ -106,14 +87,18 @@ namespace CodeBuilder.Context
             return (_loopData.Count > 0) ? _loopData.Peek() : null;
         }
 
-        public void SetValueBlock()
+        public Scope EnterScope<TScope>() where TScope : Scope, new()
         {
-            _inValueBlock += 1;
+            var scope = Scope.Create<TScope>(CurrentScope);
+            _scopes.Push(scope);
+            return scope;
         }
 
-        public void ResetValueBlock()
+        public void LeaveScope(Scope scope)
         {
-            _inValueBlock -= 1;
+            if (_scopes.Peek() != scope)
+                throw new InvalidOperationException(string.Format("Unable to leave requested scope {0} because it is not current scope.", scope));
+            _scopes.Pop();
         }
 
         private void Reset<T>(Stack<T> stack, T value, string errorMessage)

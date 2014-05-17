@@ -17,14 +17,14 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var data = new LoopData(ctx.Generator.DefineLabel(), ctx.Generator.DefineLabel());
+            var data = new LoopData(ctx.DefineLabel(), ctx.DefineLabel());
             ctx.SetLoopData(data);
 
-            ctx.Generator.MarkLabel(data.ContinueLabel);
+            data.ContinueLabel.Mark();
             _loop.Compile(ctx);
-            ctx.Generator.Emit(OpCodes.Br, data.ContinueLabel);
+            data.ContinueLabel.EmitGoto(OpCodes.Br);
 
-            ctx.Generator.MarkLabel(data.BreakLabel);
+            data.BreakLabel.Mark();
             ctx.ResetLoopData(data);
         }
 

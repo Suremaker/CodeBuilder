@@ -1,13 +1,11 @@
-﻿using System.Reflection.Emit;
-
-namespace CodeBuilder.Context
+﻿namespace CodeBuilder.Context
 {
     public class LoopData
     {
-        public Label ContinueLabel { get; private set; }
-        public Label BreakLabel { get; private set; }
+        public JumpLabel ContinueLabel { get; private set; }
+        public JumpLabel BreakLabel { get; private set; }
 
-        public LoopData(Label continueLabel, Label breakLabel)
+        public LoopData(JumpLabel continueLabel, JumpLabel breakLabel)
         {
             ContinueLabel = continueLabel;
             BreakLabel = breakLabel;
@@ -22,7 +20,7 @@ namespace CodeBuilder.Context
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((LoopData)obj);
         }
 

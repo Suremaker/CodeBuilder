@@ -20,7 +20,7 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var local = ctx.GetLocalIndex(_variable);
+            var local = ctx.GetLocal(_variable);
             if (_loadAddress)
                 EmitLocalAddress(ctx, local);
             else

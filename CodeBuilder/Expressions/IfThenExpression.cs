@@ -22,10 +22,10 @@ namespace CodeBuilder.Expressions
         internal override void Compile(IBuildContext ctx)
         {
             _predicate.Compile(ctx);
-            var label = ctx.Generator.DefineLabel();
-            ctx.Generator.Emit(OpCodes.Brfalse, label); //TODO: use Brfalse_s if possible
+            var label = ctx.DefineLabel();
+            label.EmitGoto(OpCodes.Brfalse); //TODO: use Brfalse_s if possible
             _thenExpression.Compile(ctx);
-            ctx.Generator.MarkLabel(label);
+            label.Mark();
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

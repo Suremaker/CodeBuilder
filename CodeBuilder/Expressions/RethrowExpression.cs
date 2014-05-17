@@ -9,7 +9,7 @@ namespace CodeBuilder.Expressions
     {
         internal override void Compile(IBuildContext ctx)
         {
-            if(!ctx.IsInCatchBlock)
+            if(!ctx.IsInScope<CatchScope>())
                 throw new InvalidOperationException("Unable to rethrow - not in catch block.");
             ctx.Generator.Emit(OpCodes.Rethrow);
         }

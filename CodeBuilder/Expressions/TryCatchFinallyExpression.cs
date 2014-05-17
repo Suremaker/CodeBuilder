@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection.Emit;
 using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
@@ -38,36 +37,33 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var label = ctx.Generator.BeginExceptionBlock();
-            ctx.SetExceptionBlock(label);
-            _tryExpression.Compile(ctx);
+            ctx.Generator.BeginExceptionBlock();
+
+            CompileTryBlock(ctx);
 
             foreach (var catchBlock in _catchBlocks)
-                CompileCatchBlock(ctx, catchBlock,label);
+                catchBlock.Compile(ctx);
 
             if (_finallyExpression != null)
-                CompileFinallyBlock(ctx, label);
+                CompileFinallyBlock(ctx);
 
-            ctx.ResetExceptionBlock(label);
             ctx.Generator.EndExceptionBlock();
         }
 
-        private void CompileCatchBlock(IBuildContext ctx, CatchBlock catchBlock, Label label)
+        private void CompileTryBlock(IBuildContext ctx)
         {
-            ctx.Generator.BeginCatchBlock(catchBlock.ExceptionType);
-            ctx.SetCatchBlock(label);
-            catchBlock.PreCatchExpression.Compile(ctx);
-            catchBlock.CatchExpression.Compile(ctx);
-            ctx.ResetCatchBlock(label);
+            var scope = ctx.EnterScope<TryScope>();
+            _tryExpression.Compile(ctx);
+            ctx.LeaveScope(scope);
         }
 
-        private void CompileFinallyBlock(IBuildContext ctx, Label label)
+        private void CompileFinallyBlock(IBuildContext ctx)
         {
             ctx.Generator.BeginFinallyBlock();
-            ctx.SetFinallyBlock(label);
-            _finallyExpression.Compile(ctx);
 
-            ctx.ResetFinallyBlock(label);
+            var scope = ctx.EnterScope<FinallyScope>();
+            _finallyExpression.Compile(ctx);
+            ctx.LeaveScope(scope);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -77,19 +73,11 @@ namespace CodeBuilder.Expressions
             builder.AppendLine("}");
 
             foreach (var catchBlock in _catchBlocks)
-                DumpCatchBlock(builder, catchBlock);
+                catchBlock.Dump(builder);
 
             if (_finallyExpression != null)
                 DumpFinally(builder);
             return builder;
-        }
-
-        private static void DumpCatchBlock(StringBuilder builder, CatchBlock catchBlock)
-        {
-            builder.AppendFormat(".catch ({0})", catchBlock.ExceptionType).AppendLine().AppendLine("{");
-            catchBlock.PreCatchExpression.Dump(builder);
-            catchBlock.CatchExpression.Dump(builder);
-            builder.AppendLine("}");
         }
 
         private void DumpFinally(StringBuilder builder)

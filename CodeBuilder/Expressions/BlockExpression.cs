@@ -24,8 +24,10 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
+            var scope = ctx.EnterScope<VoidBlockScope>();
             foreach (var expression in _expressions)
                 expression.Compile(ctx);
+            ctx.LeaveScope(scope);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

@@ -37,10 +37,10 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            ctx.SetValueBlock();
+            var scope = ctx.EnterScope<ValueBlockScope>();
             foreach (var expression in _expressions)
                 expression.Compile(ctx);
-            ctx.ResetValueBlock();
+            ctx.LeaveScope(scope);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

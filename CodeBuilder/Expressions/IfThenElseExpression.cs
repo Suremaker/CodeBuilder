@@ -27,19 +27,19 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var trueLabel = ctx.Generator.DefineLabel();
-            var endLabel = ctx.Generator.DefineLabel();
+            var trueLabel = ctx.DefineLabel();
+            var endLabel = ctx.DefineLabel();
 
             _predicate.Compile(ctx);
-            ctx.Generator.Emit(OpCodes.Brtrue, trueLabel); //TODO: use Brtrue_s if possible
+            trueLabel.EmitGoto(OpCodes.Brtrue); //TODO: use Brtrue_s if possible
 
             _elseExpression.Compile(ctx);
-            ctx.Generator.Emit(OpCodes.Br, endLabel); //TODO: use Br_s if possible
+            endLabel.EmitGoto(OpCodes.Br); //TODO: use Br_s if possible
 
-            ctx.Generator.MarkLabel(trueLabel);
+            trueLabel.Mark();
             _thenExpression.Compile(ctx);
 
-            ctx.Generator.MarkLabel(endLabel);
+            endLabel.Mark();
         }
 
         internal override StringBuilder Dump(StringBuilder builder)

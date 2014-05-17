@@ -1,4 +1,5 @@
 using System;
+using CodeBuilder.Context;
 using NUnit.Framework;
 
 namespace CodeBuilder.UT.Expressions
@@ -22,8 +23,8 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_not_allow_continue_in_finally_block()
         {
-            var ex = Assert.Throws<InvalidOperationException>(() => CreateAction(Expr.Loop(Expr.TryFinally(Expr.Empty(), Expr.LoopBreak()))));
-            Assert.That(ex.Message, Is.EqualTo("Break expression in finally block is forbidden"));
+            var ex = Assert.Throws<ScopeChangeException>(() => CreateAction(Expr.Loop(Expr.TryFinally(Expr.Empty(), Expr.LoopBreak()))));
+            Assert.That(ex.Message, Is.EqualTo("Loop break expression is forbidden in finally block scope"));
         }
 
         [Test]

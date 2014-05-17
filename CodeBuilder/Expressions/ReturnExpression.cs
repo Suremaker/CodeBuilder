@@ -39,12 +39,7 @@ namespace CodeBuilder.Expressions
 
         private void ValidateScope(IBuildContext ctx)
         {
-            if (ctx.IsInFinallyBlock)
-                throw new InvalidOperationException("Return expression is forbidden in finally blocks");
-            if (ctx.IsInValueBlock)
-                throw new InvalidOperationException("Return expression is forbidden in value blocks");
-            if (ctx.IsInExceptionBlock)
-                throw new NotSupportedException("Return expression in try-catch blocks is not supported");
+            ctx.CurrentScope.ValidateJumpOutTo(null, ScopeJumpType.Return, "Return expression is forbidden in {0} scope");
         }
 
         private void ValidateReturnType(IBuildContext ctx)

@@ -21,7 +21,7 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var local = ctx.GetOrDeclareLocalIndex(_variable);
+            var local = ctx.GetOrDeclareLocal(_variable);
             _value.Compile(ctx);
             if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Stloc_0);
             else if (local.LocalIndex == 1) ctx.Generator.Emit(OpCodes.Stloc_1);

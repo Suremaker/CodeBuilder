@@ -59,7 +59,9 @@ namespace CodeBuilder.UT
         private static Delegate CreateMethod(Type delegateType, Type returnType, Type[] parameterTypes, params Expression[] expressions)
         {
             var method = new DynamicMethod("testMethod", returnType, parameterTypes, typeof(BuilderTestBase), true);
-            new MethodBodyBuilder(method, parameterTypes).AddStatements(expressions).Compile();
+            var builder = new MethodBodyBuilder(method, parameterTypes).AddStatements(expressions);
+            Console.WriteLine(builder);
+            builder.Compile();
             return method.CreateDelegate(delegateType);
         }
     }

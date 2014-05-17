@@ -12,13 +12,12 @@ namespace CodeBuilder.Expressions
             var data = ctx.GetLoopData();
             if (data == null)
                 throw new InvalidOperationException("Break expression can be used only inside loop");
-            if (ctx.IsInFinallyBlock)
-                throw new InvalidOperationException("Break expression in finally block is forbidden");
-            if (ctx.IsInValueBlock)
-                throw new InvalidOperationException("Break expression is forbidden in value blocks");
-            if (ctx.IsInExceptionBlock)
-                throw new NotSupportedException("Break expression in try-catch blocks is not supported");
-            ctx.Generator.Emit(OpCodes.Br, data.BreakLabel);
+            data.BreakLabel.EmitGoto(OpCodes.Br, ValidateJump);
+        }
+
+        private void ValidateJump(Scope jumpFrom, Scope jumpTo)
+        {
+            jumpFrom.ValidateJumpOutTo(jumpTo, ScopeJumpType.Break, "Loop break expression is forbidden in {0} scope");
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
