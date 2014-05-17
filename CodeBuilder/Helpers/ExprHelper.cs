@@ -6,7 +6,7 @@ namespace CodeBuilder.Helpers
     {
         public static Expression PopIfNeeded(Expression expression)
         {
-            return (expression.ExpressionType != typeof (void)) ? Expr.Pop(expression) : expression;
+            return (expression.ExpressionType != typeof(void)) ? Expr.Pop(expression) : expression;
         }
     }
 }

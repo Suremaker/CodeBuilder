@@ -42,6 +42,9 @@
     <Compile Include="Context\Scope.cs" />
     <Compile Include="Context\ScopeChangeException.cs" />
     <Compile Include="Expressions\AddExpression.cs" />
+    <Compile Include="Expressions\ArrayLengthExpression.cs" />
+    <Compile Include="Expressions\ArrayReadExpression.cs" />
+    <Compile Include="Expressions\ArrayWriteExpression.cs" />
     <Compile Include="Expressions\BlockExpression.cs" />
     <Compile Include="Expressions\CallExpression.cs" />
     <Compile Include="Expressions\ComparisonExpression.cs" />
@@ -64,6 +67,7 @@
     <Compile Include="Expressions\LoopContinueExpression.cs" />
     <Compile Include="Expressions\LoopExpression.cs" />
     <Compile Include="Expressions\NegateExpression.cs" />
+    <Compile Include="Expressions\NewArrayExpression.cs" />
     <Compile Include="Expressions\NotExpression.cs" />
     <Compile Include="Expressions\NullExpression.cs" />
     <Compile Include="Expressions\RethrowExpression.cs" />
@@ -74,6 +78,7 @@
     <Compile Include="Expressions\ValueTypePointerExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
+    <Compile Include="Helpers\EmitHelper.cs" />
     <Compile Include="Helpers\ExprHelper.cs" />
     <Compile Include="Helpers\MemberHelper.cs" />
     <Compile Include="Helpers\StringFormat.cs" />

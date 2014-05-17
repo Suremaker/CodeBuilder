@@ -6,6 +6,9 @@ namespace CodeBuilder.Helpers
 {
     public static class Validators
     {
+        private static readonly Type[] _intTypes = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(char), typeof(int), typeof(uint), typeof(long), typeof(ulong) };
+        
+
         public static void NullCollectionElementsCheck<T>(T[] array, string paramName) where T : class
         {
             if (array == null)
@@ -79,8 +82,27 @@ namespace CodeBuilder.Helpers
 
         public static void ReferenceTypeCheck(Type type, string paramName)
         {
-            if (!type.IsClass&&!type.IsInterface)
+            if (!type.IsClass && !type.IsInterface)
                 throw new ArgumentException(string.Format("Expected reference type, got: {0}", type), paramName);
+        }
+
+        public static Expression ArrayCheck(Expression array, string paramName)
+        {
+            NullCheck(array, paramName);
+            ArrayCheck(array.ExpressionType,paramName);
+            return array;
+        }
+
+        public static void ArrayCheck(Type type, string paramName)
+        {
+            if (!type.IsArray)
+                throw new ArgumentException(string.Format("Expected array type, got: {0}", type), paramName);
+        }
+
+        public static void IntegralCheck(Type type, string errorMessage, string paramName)
+        {
+            if (!CollectionHelper.Contains(_intTypes, type))
+                throw new ArgumentException(string.Format(errorMessage, paramName));
         }
     }
 }

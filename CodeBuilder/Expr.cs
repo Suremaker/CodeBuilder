@@ -96,21 +96,24 @@ namespace CodeBuilder
         public static EqualExpression Equal(Expression left, Expression right) { return new EqualExpression(left, right); }
         public static NullExpression Null(Type type) { return new NullExpression(type); }
 
-        public static Expression PropertyRead(Expression instance, PropertyInfo property)
+        public static Expression ReadProperty(Expression instance, PropertyInfo property)
         {
             return Call(instance, property.GetGetMethod(true));
         }
 
-        public static Expression PropertyRead(Expression instance, string propertyName)
+        public static Expression ReadProperty(Expression instance, string propertyName)
         {
             return Call(instance, MemberHelper.FindProperty(instance, propertyName).GetGetMethod(true));
         }
 
-        public static Expression PropertyRead(PropertyInfo property)
+        public static Expression ReadProperty(PropertyInfo property)
         {
             return Call(property.GetGetMethod(true));
         }
 
-
+        public static ArrayLengthExpression ArrayLength(Expression array) { return new ArrayLengthExpression(array); }
+        public static NewArrayExpression NewArray(Type elementType, Expression count) { return new NewArrayExpression(elementType, count); }
+        public static ArrayReadExpression ReadArray(Expression array, Expression index) { return new ArrayReadExpression(array, index); }
+        public static ArrayWriteExpression WriteArray(Expression array, Expression index, Expression value) { return new ArrayWriteExpression(array, index, value); }
     }
 }
