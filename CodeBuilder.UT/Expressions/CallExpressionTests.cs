@@ -190,9 +190,9 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_call_struct_instance_method_via_local_variable()
         {
-            var local = Expr.DeclareLocalVar(typeof(Counter), "s");
+            var local = Expr.LocalVariable(typeof(Counter), "s");
             var func = CreateFunc<Counter, Counter>(
-                Expr.WriteLocal(local, Expr.Parameter(0, typeof(Counter))),
+                Expr.DeclareLocal(local, Expr.Parameter(0, typeof(Counter))),
                 Expr.Call(Expr.ReadLocal(local), typeof(Counter).GetMethod("Count")),
                 Expr.Return(Expr.ReadLocal(local)));
 

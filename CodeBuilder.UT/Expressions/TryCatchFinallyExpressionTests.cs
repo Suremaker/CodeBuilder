@@ -86,9 +86,12 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_allow_to_use_catched_exception()
         {
-            var local = Expr.DeclareLocalVar(typeof(Exception), "e");
+            var local = Expr.LocalVariable(typeof(Exception), "e");
             var func = CreateFunc<Exception>(
-                Expr.TryCatch(Expr.Throw(Expr.New(typeof(InvalidOperationException), Expr.Constant("abc"))), new CatchBlock(typeof(InvalidOperationException), local, Expr.Empty())),
+                Expr.DeclareLocal(local),
+                Expr.TryCatch(
+                    Expr.Throw(Expr.New(typeof(InvalidOperationException), Expr.Constant("abc"))),
+                    new CatchBlock(typeof(InvalidOperationException), local, false, Expr.Empty())),
                 Expr.Return(Expr.ReadLocal(local)));
             Assert.That(func().Message, Is.EqualTo("abc"));
         }
@@ -112,7 +115,7 @@ namespace CodeBuilder.UT.Expressions
             var ex = Assert.Throws<ArgumentException>(() => new CatchBlock(typeof(object), Expr.Empty()));
             Assert.That(ex.Message, Is.StringContaining("Provided type System.Object has to be deriving from System.Exception"));
 
-            ex = Assert.Throws<ArgumentException>(() => new CatchBlock(typeof(Exception), Expr.DeclareLocalVar(typeof(InvalidOperationException), "e"), Expr.Empty()));
+            ex = Assert.Throws<ArgumentException>(() => new CatchBlock(typeof(Exception), Expr.LocalVariable(typeof(InvalidOperationException), "e"), Expr.Empty()));
             Assert.That(ex.Message, Is.StringContaining("Unable to assign exception of type System.Exception to local of type System.InvalidOperationException"));
         }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace CodeBuilder.Context
 {
@@ -16,6 +18,7 @@ namespace CodeBuilder.Context
 
     public class Scope
     {
+        private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
         public ScopeJumpType JumpOutPolicy { get; private set; }
         public string Name { get; private set; }
         public Scope Outer { get; private set; }
@@ -47,6 +50,35 @@ namespace CodeBuilder.Context
                     throw new ScopeChangeException(string.Format(exceptionMessageFormat, scope));
                 scope = scope.Outer;
             }
+        }
+
+        internal LocalBuilder DeclareLocal(IBuildContext ctx, LocalVariable variable)
+        {
+            foreach (var v in _localVars)
+            {
+                if (v.Key.Name == variable.Name)
+                    throw new ArgumentException(string.Format("Unable to declare '{0}' local variable, '{1}' with same name already exist", variable, v.Key));
+            }
+            var local = ctx.Generator.DeclareLocal(variable.VariableType);
+            if (ctx.IsSymbolInfoSupported)
+                local.SetLocalSymInfo(variable.Name);
+            _localVars.Add(variable, local);
+            return local;
+        }
+
+        internal LocalBuilder FindLocal(LocalVariable variable)
+        {
+            LocalBuilder value;
+            _localVars.TryGetValue(variable, out value);
+            return value;
+        }
+
+        internal LocalVariable FindLocal(string name)
+        {
+            foreach (var localVar in _localVars)
+                if (localVar.Key.Name == name)
+                    return localVar.Key;
+            return null;
         }
     }
 

@@ -31,7 +31,7 @@ namespace CodeBuilder.UT.Expressions
         [Ignore("Not implemented yet")]
         public void Should_allow_continue_in_catch_block()
         {
-            var loc = Expr.DeclareLocalVar(typeof(int), "i");
+            var loc = Expr.LocalVariable(typeof(int), "i");
             var func = CreateFunc<int>(
                 Expr.WriteLocal(loc, Expr.Constant(0)),
                 Expr.Loop(Expr.TryCatch(

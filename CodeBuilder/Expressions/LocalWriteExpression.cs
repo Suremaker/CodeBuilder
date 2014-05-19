@@ -21,14 +21,7 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx)
         {
-            var local = ctx.GetOrDeclareLocal(_variable);
-            _value.Compile(ctx);
-            if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Stloc_0);
-            else if (local.LocalIndex == 1) ctx.Generator.Emit(OpCodes.Stloc_1);
-            else if (local.LocalIndex == 2) ctx.Generator.Emit(OpCodes.Stloc_2);
-            else if (local.LocalIndex == 3) ctx.Generator.Emit(OpCodes.Stloc_3);
-            else if (local.LocalIndex < 256) ctx.Generator.Emit(OpCodes.Stloc_S, local);
-            else ctx.Generator.Emit(OpCodes.Stloc, local);
+            Compile(ctx, ctx.GetLocal(_variable), _value);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -36,6 +29,17 @@ namespace CodeBuilder.Expressions
             builder.AppendFormat(".setlocal [{0}]", _variable);
             _value.Dump(builder);
             return builder.AppendLine(";");
+        }
+
+        internal static void Compile(IBuildContext ctx, LocalBuilder local, Expression value)
+        {
+            value.Compile(ctx);
+            if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Stloc_0);
+            else if (local.LocalIndex == 1) ctx.Generator.Emit(OpCodes.Stloc_1);
+            else if (local.LocalIndex == 2) ctx.Generator.Emit(OpCodes.Stloc_2);
+            else if (local.LocalIndex == 3) ctx.Generator.Emit(OpCodes.Stloc_3);
+            else if (local.LocalIndex < 256) ctx.Generator.Emit(OpCodes.Stloc_S, local);
+            else ctx.Generator.Emit(OpCodes.Stloc, local);
         }
     }
 }

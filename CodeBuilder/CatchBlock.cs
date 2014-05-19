@@ -10,7 +10,7 @@ namespace CodeBuilder
     {
         private readonly Expression _catchExpression;
         private readonly Expression _preCatchExpression;
-        public Type ExceptionType { get; set; }
+        public Type ExceptionType { get; private set; }
 
         /// <summary>
         /// Creates catch block for exception of exceptionType.
@@ -18,8 +18,9 @@ namespace CodeBuilder
         /// </summary>
         /// <param name="exceptionType">Exception type.</param>
         /// <param name="exceptionVariable">Variable used to access caught exception</param>
+        /// <param name="declareVariable">If true, exception variable would be declared before use</param>
         /// <param name="catchExpression">Catch expression.</param>
-        public CatchBlock(Type exceptionType, LocalVariable exceptionVariable, Expression catchExpression)
+        public CatchBlock(Type exceptionType, LocalVariable exceptionVariable, bool declareVariable, Expression catchExpression)
         {
             Validators.NullCheck(exceptionType, "exceptionType");
             Validators.NullCheck(catchExpression, "catchExpression");
@@ -27,10 +28,13 @@ namespace CodeBuilder
             Validators.HierarchyCheck(exceptionType, typeof(Exception), "Provided type {0} has to be deriving from {1}", "exceptionType");
             Validators.HierarchyCheck(exceptionType, exceptionVariable.VariableType, "Unable to assign exception of type {0} to local of type {1}", "exceptionVariable");
             ExceptionType = exceptionType;
-            _preCatchExpression = Expr.WriteLocal(exceptionVariable, new ValueOnStackExpression(exceptionType));
+            _preCatchExpression = declareVariable 
+                ? (Expression)Expr.DeclareLocal(exceptionVariable, new ValueOnStackExpression(exceptionType)) 
+                : Expr.WriteLocal(exceptionVariable, new ValueOnStackExpression(exceptionType));
             _catchExpression = ExprHelper.PopIfNeeded(catchExpression);
         }
-
+        public CatchBlock(Type exceptionType, LocalVariable exceptionVariable, Expression catchExpression)
+            : this(exceptionType, exceptionVariable, true, catchExpression) { }
         /// <summary>
         /// Creates catch block for exception of exceptionType, where exception instance is not required.
         /// </summary>

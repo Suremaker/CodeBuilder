@@ -9,7 +9,7 @@ namespace CodeBuilder.Context
         Type[] Parameters { get; }
         ILGenerator Generator { get; }
 
-        LocalBuilder GetOrDeclareLocal(LocalVariable variable);
+        LocalBuilder DeclareLocal(LocalVariable variable);
         LocalBuilder GetLocal(LocalVariable variable);
         void SetLoopData(LoopData data);
         void ResetLoopData(LoopData data);

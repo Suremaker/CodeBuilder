@@ -51,7 +51,9 @@ namespace CodeBuilder
         public static TryCatchFinallyExpression TryCatchFinally(Expression tryExpression, Expression finallyExpression, params CatchBlock[] catchBlocks) { return new TryCatchFinallyExpression(tryExpression, finallyExpression, catchBlocks); }
         public static TryCatchFinallyExpression TryCatch(Expression tryExpression, params CatchBlock[] catchBlocks) { return new TryCatchFinallyExpression(tryExpression, null, catchBlocks); }
 
-        public static LocalVariable DeclareLocalVar(Type variableType, string name) { return new LocalVariable(variableType, name); }
+        public static LocalVariable LocalVariable(Type variableType, string name) { return new LocalVariable(variableType, name); }
+        public static LocalDeclarationExpression DeclareLocal(LocalVariable variable) { return new LocalDeclarationExpression(variable); }
+        public static LocalDeclarationExpression DeclareLocal(LocalVariable variable, Expression initialValue) { return new LocalDeclarationExpression(variable, initialValue); }
         public static LocalWriteExpression WriteLocal(LocalVariable variable, Expression value) { return new LocalWriteExpression(variable, value); }
         public static LocalReadExpression ReadLocal(LocalVariable variable) { return new LocalReadExpression(variable); }
         /// <summary>

@@ -10,12 +10,12 @@ namespace CodeBuilder.UT.Scenarios
         [Test]
         public void Should_allow_inner_loop_with_break_and_continue_in_value_block()
         {
-            var i = Expr.DeclareLocalVar(typeof(int), "i");
-            var v = Expr.DeclareLocalVar(typeof(int), "v");
+            var i = Expr.LocalVariable(typeof(int), "i");
+            var v = Expr.LocalVariable(typeof(int), "v");
             var func = CreateFunc<int, int>(
                 Expr.Return(Expr.ValueBlock(typeof(int),
-                    Expr.WriteLocal(i, Expr.Parameter(0, typeof(int))),
-                    Expr.WriteLocal(v, Expr.Constant(0)),
+                    Expr.DeclareLocal(i, Expr.Parameter(0, typeof(int))),
+                    Expr.DeclareLocal(v, Expr.Constant(0)),
                     Expr.Loop(Expr.Block(
                         Expr.IfThen(
                             Expr.ReadLocal(i),
@@ -64,9 +64,9 @@ namespace CodeBuilder.UT.Scenarios
         [Test]
         public void Should_allow_inner_loop_with_break_continue_in_catch_block()
         {
-            var result = Expr.DeclareLocalVar(typeof(int), "r");
+            var result = Expr.LocalVariable(typeof(int), "r");
             var func = CreateFunc<int>(
-                Expr.WriteLocal(result, Expr.Constant(0)),
+                Expr.DeclareLocal(result, Expr.Constant(0)),
                 Expr.TryCatch(
                         Expr.Throw(Expr.New(typeof(Exception))),
                     new CatchBlock(Expr.Block(

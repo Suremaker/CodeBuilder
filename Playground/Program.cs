@@ -93,7 +93,7 @@ namespace Playground
             mb.DefineParameter(1, ParameterAttributes.None, "value");
 
             builder = new MethodBodyBuilder(mb, typeof(string));
-            var loc1 = Expr.DeclareLocalVar(typeof(Exception), "e");
+            var loc1 = Expr.LocalVariable(typeof(Exception), "e");
             builder.AddStatements(
                 Expr.TryCatchFinally(
                     Expr.IfThenElse(Expr.Parameter(1, typeof(string)),
@@ -111,12 +111,12 @@ namespace Playground
             mb.SetReturnType(typeof(void));
 
 
-            var var1 = Expr.DeclareLocalVar(typeof(string), "o");
-            var var2 = Expr.DeclareLocalVar(typeof(int), "i");
+            var var1 = Expr.LocalVariable(typeof(string), "o");
+            var var2 = Expr.LocalVariable(typeof(int), "i");
             builder = new MethodBodyBuilder(mb, typeof(string));
             builder.AddStatements(
-                Expr.WriteLocal(var1, Expr.Constant("High {0}!")),
-                Expr.WriteLocal(var2, Expr.Constant(5)),
+                Expr.DeclareLocal(var1, Expr.Constant("High {0}!")),
+                Expr.DeclareLocal(var2, Expr.Constant(5)),
                 Expr.Call(typeof(Console).GetMethod("WriteLine", new[] { typeof(string), typeof(object) }), Expr.ReadLocal(var1), Expr.Convert(Expr.ReadLocal(var2), typeof(object))));
 
             Console.WriteLine(builder.ToString());
@@ -136,10 +136,10 @@ namespace Playground
             mb.SetReturnType(typeof(void));
 
 
-            var iVar = Expr.DeclareLocalVar(typeof(int), "i");
+            var iVar = Expr.LocalVariable(typeof(int), "i");
             builder = new MethodBodyBuilder(mb);
             builder.AddStatements(
-                Expr.WriteLocal(iVar, Expr.Constant(10)),
+                Expr.DeclareLocal(iVar, Expr.Constant(10)),
                 Expr.Loop(Expr.IfThenElse(
                     Expr.ReadLocal(iVar),
                     Expr.Block(
@@ -211,11 +211,12 @@ namespace Playground
             mb.SetReturnType(typeof(Exception));
 
             builder = new MethodBodyBuilder(mb);
-            var local = Expr.DeclareLocalVar(typeof(Exception), "e");
+            var local = Expr.LocalVariable(typeof(Exception), "e");
             builder.AddStatements(
+                Expr.DeclareLocal(local),
                 Expr.TryCatch(
                     Expr.Throw(Expr.New(typeof(InvalidOperationException), Expr.Constant("abc"))),
-                    new CatchBlock(typeof(InvalidOperationException), local, Expr.Empty())),
+                    new CatchBlock(typeof(InvalidOperationException), local, false, Expr.Empty())),
                 Expr.Return(Expr.ReadLocal(local)));
 
             Console.WriteLine(builder.ToString());

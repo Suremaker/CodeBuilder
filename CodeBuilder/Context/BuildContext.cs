@@ -8,7 +8,6 @@ namespace CodeBuilder.Context
     {
         private readonly Stack<Scope> _scopes = new Stack<Scope>();
         private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
-        private readonly IDictionary<LocalVariable, LocalBuilder> _localVars = new Dictionary<LocalVariable, LocalBuilder>();
 
         public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, bool isSymbolInfoSupported = true)
         {
@@ -41,34 +40,29 @@ namespace CodeBuilder.Context
 
         public Scope CurrentScope { get { return _scopes.Peek(); } }
 
-        public LocalBuilder GetOrDeclareLocal(LocalVariable variable)
+        public LocalBuilder DeclareLocal(LocalVariable variable)
         {
-            LocalBuilder value;
-            if (_localVars.TryGetValue(variable, out value))
-                return value;
-
-            return DeclareLocal(variable);
-        }
-
-        private LocalBuilder DeclareLocal(LocalVariable variable)
-        {
-            foreach (var v in _localVars)
+            var scope = CurrentScope;
+            while (scope != null)
             {
-                if (v.Key.Name == variable.Name)
-                    throw new ArgumentException(string.Format("Unable to declare '{0}' local variable, '{1}' with same name already exist", variable, v.Key));
+                var localVar = scope.FindLocal(variable.Name);
+                if (localVar != null)
+                    throw new InvalidOperationException(string.Format("Local variable with {0} name is already declared", variable.Name));
+                scope = scope.Outer;
             }
-            var local = Generator.DeclareLocal(variable.VariableType);
-            if (IsSymbolInfoSupported)
-                local.SetLocalSymInfo(variable.Name);
-            _localVars.Add(variable, local);
-            return local;
+            return CurrentScope.DeclareLocal(this, variable);
         }
 
         public LocalBuilder GetLocal(LocalVariable variable)
         {
-            LocalBuilder value;
-            if (_localVars.TryGetValue(variable, out value))
-                return value;
+            var scope = CurrentScope;
+            while (scope != null)
+            {
+                var value = scope.FindLocal(variable);
+                if (value != null)
+                    return value;
+                scope = scope.Outer;
+            }
             throw new InvalidOperationException(string.Format("Uninitialized local variable access: {0}", variable));
         }
 
@@ -91,6 +85,8 @@ namespace CodeBuilder.Context
         {
             var scope = Scope.Create<TScope>(CurrentScope);
             _scopes.Push(scope);
+            if (IsSymbolInfoSupported)
+                Generator.BeginScope();
             return scope;
         }
 
@@ -98,6 +94,8 @@ namespace CodeBuilder.Context
         {
             if (_scopes.Peek() != scope)
                 throw new InvalidOperationException(string.Format("Unable to leave requested scope {0} because it is not current scope.", scope));
+            if (IsSymbolInfoSupported)
+                Generator.EndScope();
             _scopes.Pop();
         }
 

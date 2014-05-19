@@ -61,6 +61,7 @@
     <Compile Include="Expressions\GreaterExpression.cs" />
     <Compile Include="Expressions\IfThenElseExpression.cs" />
     <Compile Include="Expressions\LessExpression.cs" />
+    <Compile Include="Expressions\LocalDeclarationExpression.cs" />
     <Compile Include="Expressions\LocalReadExpression.cs" />
     <Compile Include="Expressions\LocalWriteExpression.cs" />
     <Compile Include="Expressions\LoopBreakExpression.cs" />

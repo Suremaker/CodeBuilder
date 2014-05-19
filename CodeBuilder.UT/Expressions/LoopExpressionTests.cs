@@ -28,9 +28,9 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_iterate_n_times()
         {
-            var loc = Expr.DeclareLocalVar(typeof(int), "i");
+            var loc = Expr.LocalVariable(typeof(int), "i");
             var func = CreateFunc<int, int>(
-                Expr.WriteLocal(loc, Expr.Constant(0)),
+                Expr.DeclareLocal(loc, Expr.Constant(0)),
                 Expr.Loop(Expr.IfThenElse(
                     Expr.Equal(Expr.ReadLocal(loc), Expr.Parameter(0, typeof(int))),
                     Expr.LoopBreak(),
@@ -43,9 +43,9 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_iterate_n_times_with_continue()
         {
-            var loc = Expr.DeclareLocalVar(typeof(int), "i");
+            var loc = Expr.LocalVariable(typeof(int), "i");
             var func = CreateFunc<int, int>(
-                Expr.WriteLocal(loc, Expr.Constant(0)),
+                Expr.DeclareLocal(loc, Expr.Constant(0)),
                 Expr.Loop(Expr.Block(
                     Expr.WriteLocal(loc, Expr.Add(Expr.ReadLocal(loc), Expr.Constant(1))),
                     Expr.IfThen(
@@ -59,9 +59,9 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_iterate_n_times_with_return()
         {
-            var loc = Expr.DeclareLocalVar(typeof(int), "i");
+            var loc = Expr.LocalVariable(typeof(int), "i");
             var func = CreateFunc<int, int>(
-                Expr.WriteLocal(loc, Expr.Constant(0)),
+                Expr.DeclareLocal(loc, Expr.Constant(0)),
                 Expr.Loop(Expr.Block(
                     Expr.WriteLocal(loc, Expr.Add(Expr.ReadLocal(loc), Expr.Constant(1))),
                     Expr.IfThen(

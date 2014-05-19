@@ -95,9 +95,9 @@ namespace CodeBuilder.UT.Expressions
         [Test]
         public void Should_write_local_field_of_struct_via_local_variable()
         {
-            var local = Expr.DeclareLocalVar(typeof(TestStruct), "s");
+            var local = Expr.LocalVariable(typeof(TestStruct), "s");
             var func = CreateFunc<TestStruct, string, TestStruct>(
-                Expr.WriteLocal(local, Expr.Parameter(0, typeof(TestStruct))),
+                Expr.DeclareLocal(local, Expr.Parameter(0, typeof(TestStruct))),
                 Expr.WriteField(Expr.ReadLocal(local), _structLocal, Expr.Parameter(1, typeof(string))),
                 Expr.Return(Expr.ReadLocal(local)));
             Assert.That(func(new TestStruct(), "abc321").GetLocal(), Is.EqualTo("abc321"));
