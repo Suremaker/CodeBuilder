@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -50,17 +49,6 @@ namespace CodeBuilder.Expressions
                 EmitStructInit(ctx);
             else
                 ctx.Generator.Emit(OpCodes.Newobj, _constructorInfo);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.Append(".new [").Append(ExpressionType).Append("] (");
-            for (int i = 0; i < _arguments.Length; i++)
-            {
-                _arguments[i].Dump(builder);
-                if (i + 1 < _arguments.Length) builder.Append(", ");
-            }
-            return builder.Append(")");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

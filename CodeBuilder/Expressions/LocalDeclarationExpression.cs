@@ -1,5 +1,4 @@
-﻿using System.Text;
-using CodeBuilder.Context;
+﻿using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
 namespace CodeBuilder.Expressions
@@ -29,17 +28,6 @@ namespace CodeBuilder.Expressions
 
             if (_initialValue != null)
                 LocalWriteExpression.Compile(ctx, local, _initialValue, expressionId);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendFormat(".local {0}", _variable);
-            if (_initialValue != null)
-            {
-                builder.Append(" = ");
-                _initialValue.Dump(builder);
-            }
-            return builder.AppendLine(";");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

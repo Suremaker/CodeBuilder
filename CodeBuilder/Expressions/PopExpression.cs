@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -22,11 +21,6 @@ namespace CodeBuilder.Expressions
         {
             ctx.Compile(_expression);
             ctx.Generator.Emit(OpCodes.Pop);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return _expression.Dump(builder).AppendLine(";");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

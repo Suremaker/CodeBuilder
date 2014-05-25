@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -26,13 +25,6 @@ namespace CodeBuilder.Expressions
             EmitHelper.ConvertToNativeInt(ctx, _count.ExpressionType);
             ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Newarr, _elementType);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendFormat(".array ").Append(_elementType).Append(" [");
-            _count.Dump(builder);
-            return builder.Append("]");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

@@ -1,5 +1,4 @@
-﻿using System.Text;
-using CodeBuilder.Context;
+﻿using CodeBuilder.Context;
 
 namespace CodeBuilder.Expressions
 {
@@ -7,11 +6,6 @@ namespace CodeBuilder.Expressions
     {
         internal override void Compile(IBuildContext ctx, int expressionId)
         {
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return builder;
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

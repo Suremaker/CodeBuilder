@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using CodeBuilder.Context;
 
@@ -12,13 +13,14 @@ namespace CodeBuilder.Expressions
         }
 
         public Type ExpressionType { get; private set; }
-        internal abstract void Compile(IBuildContext ctx,int expressionId);
-        internal abstract StringBuilder Dump(StringBuilder builder);
+        internal abstract void Compile(IBuildContext ctx, int expressionId);
         internal abstract CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator);
 
         public override string ToString()
         {
-            return Dump(new StringBuilder()).ToString();
+            var builder = new StringBuilder();
+            WriteDebugCode(new MethodSymbolGenerator(null, new StringWriter(builder)));
+            return builder.ToString();
         }
 
         internal Expression EnsureCallableForm()

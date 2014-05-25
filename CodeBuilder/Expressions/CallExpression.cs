@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -60,19 +59,6 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit(OpCodes.Call, _methodInfo);
         }
 
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            if (_instance != null)
-                _instance.Dump(builder);
-            builder.Append(GetMethodCodeHeader());
-            for (int i = 0; i < _arguments.Length; ++i)
-            {
-                _arguments[i].Dump(builder);
-                if (i + 1 < _arguments.Length) builder.Append(", ");
-            }
-            return builder.Append(")");
-        }
-
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
             var begin = symbolGenerator.GetCurrentPosition();
@@ -85,7 +71,10 @@ namespace CodeBuilder.Expressions
                 if (i + 1 < _arguments.Length)
                     symbolGenerator.Write(", ");
             }
-            return begin.BlockTo(symbolGenerator.Write(")").GetCurrentPosition());
+            symbolGenerator.Write(")");
+            if (ExpressionType == typeof(void))
+                return begin.BlockTo(symbolGenerator.WriteStatementEnd(";"));
+            return begin.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

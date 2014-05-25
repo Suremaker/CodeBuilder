@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 
 namespace CodeBuilder.Expressions
@@ -21,14 +20,9 @@ namespace CodeBuilder.Expressions
             data.ContinueLabel.EmitGoto(OpCodes.Br, ValidateJump);
         }
 
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return builder.AppendLine(".continue;");
-        }
-
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
-            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.WriteStatementEnd("break;"));
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.WriteStatementEnd("continue;"));
         }
     }
 }

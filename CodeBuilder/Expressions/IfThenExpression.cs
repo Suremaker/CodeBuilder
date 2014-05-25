@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -26,15 +25,6 @@ namespace CodeBuilder.Expressions
             label.EmitGoto(OpCodes.Brfalse); //TODO: use Brfalse_s if possible
             ctx.Compile(_thenExpression);
             label.Mark();
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.Append(".if (");
-            _predicate.Dump(builder);
-            builder.AppendLine(")").AppendLine("{");
-            _thenExpression.Dump(builder);
-            return builder.AppendLine("}");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

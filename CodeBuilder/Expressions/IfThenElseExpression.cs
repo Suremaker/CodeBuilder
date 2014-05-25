@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -40,17 +39,6 @@ namespace CodeBuilder.Expressions
             ctx.Compile(_thenExpression);
 
             endLabel.Mark();
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.Append(".if (");
-            _predicate.Dump(builder);
-            builder.AppendLine(")").AppendLine("{");
-            _thenExpression.Dump(builder);
-            builder.AppendLine("}").AppendLine("else").AppendLine("{");
-            _elseExpression.Dump(builder);
-            return builder.AppendLine("}");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

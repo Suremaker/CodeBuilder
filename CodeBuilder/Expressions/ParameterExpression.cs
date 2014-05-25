@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -56,11 +54,6 @@ namespace CodeBuilder.Expressions
                 EmitArgumentAddress(ctx);
             else
                 EmitArgumentValue(ctx);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return builder.AppendFormat("p{0}", _parameterId);
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

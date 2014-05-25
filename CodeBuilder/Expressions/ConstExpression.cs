@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -145,26 +144,24 @@ namespace CodeBuilder.Expressions
             _action(ctx);
         }
 
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            if (ExpressionType == typeof(string))
-                return builder.AppendFormat("\"{0}\"", _value);
-            if (ExpressionType == typeof(Type))
-                return builder.AppendFormat("typeof({0})", _value);
-            return builder.Append(string.Format(CultureInfo.InvariantCulture, "{0}", _value));
-        }
-
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
             var begin = symbolGenerator.GetCurrentPosition();
 
             if (ExpressionType == typeof(string))
-                symbolGenerator.Write(string.Format("\"{0}\"", ((string)_value).Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t").Replace("\"", "\\\"")));
+                symbolGenerator.Write(DumpStringValue());
             else if (ExpressionType == typeof(Type))
                 symbolGenerator.Write(string.Format("typeof({0})", _value));
             else
                 symbolGenerator.Write(string.Format(CultureInfo.InvariantCulture, "{0}", _value));
             return begin.BlockTo(symbolGenerator.GetCurrentPosition());
+        }
+
+        private string DumpStringValue()
+        {
+            if (_value == null) 
+                return "null";
+            return string.Format("\"{0}\"", ((string)_value).Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t").Replace("\"", "\\\""));
         }
     }
 }

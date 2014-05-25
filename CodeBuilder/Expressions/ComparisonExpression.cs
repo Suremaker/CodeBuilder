@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -46,14 +45,6 @@ namespace CodeBuilder.Expressions
         }
 
         protected abstract OpCode GetOpCode(bool isUnsigned);
-
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            _left.Dump(builder);
-            builder.Append(GetDumpSymbol());
-            return _right.Dump(builder);
-        }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {

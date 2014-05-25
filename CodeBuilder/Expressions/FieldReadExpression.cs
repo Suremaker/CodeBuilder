@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -42,13 +41,6 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit((_instance != null) ? OpCodes.Ldflda : OpCodes.Ldsflda, _fieldInfo);
             else
                 ctx.Generator.Emit((_instance != null) ? OpCodes.Ldfld : OpCodes.Ldsfld, _fieldInfo);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            if (_instance != null)
-                _instance.Dump(builder);
-            return builder.AppendFormat(".getField [{0}.{1}]", _fieldInfo.DeclaringType, _fieldInfo.Name);
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

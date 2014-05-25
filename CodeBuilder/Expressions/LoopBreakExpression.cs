@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 
 namespace CodeBuilder.Expressions
@@ -19,11 +18,6 @@ namespace CodeBuilder.Expressions
                 throw new InvalidOperationException("Break expression can be used only inside loop");
             ctx.MarkSequencePointFor(expressionId);
             data.BreakLabel.EmitGoto(OpCodes.Br, ValidateJump);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return builder.AppendLine(".break;");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

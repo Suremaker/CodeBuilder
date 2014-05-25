@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Expressions;
 using CodeBuilder.Helpers;
@@ -71,14 +70,6 @@ namespace CodeBuilder
             ctx.Compile(_preCatchExpression);
             ctx.Compile(_catchExpression);
             ctx.LeaveScope(scope);
-        }
-
-        internal void Dump(StringBuilder builder)
-        {
-            builder.AppendFormat(".catch ({0})", ExceptionType).AppendLine().AppendLine("{");
-            _preCatchExpression.Dump(builder);
-            _catchExpression.Dump(builder);
-            builder.AppendLine("}");
         }
 
         internal void WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -49,13 +48,6 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit(OpCodes.Add_Ovf_Un);
             else
                 ctx.Generator.Emit(OpCodes.Add_Ovf);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            _left.Dump(builder);
-            builder.Append(" + ");
-            return _right.Dump(builder);
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

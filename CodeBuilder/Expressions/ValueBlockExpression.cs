@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -34,21 +33,13 @@ namespace CodeBuilder.Expressions
         {
             get { return _expressions; }
         }
-        
+
         internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var scope = ctx.EnterScope<ValueBlockScope>();
             foreach (var expression in _expressions)
                 ctx.Compile(expression);
             ctx.LeaveScope(scope);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendLine("{");
-            foreach (var expression in _expressions)
-                expression.Dump(builder);
-            return builder.AppendLine("}");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

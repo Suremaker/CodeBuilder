@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -22,13 +21,6 @@ namespace CodeBuilder.Expressions
         internal override void Compile(IBuildContext ctx, int expressionId)
         {
             Compile(ctx, ctx.GetLocal(_variable), _value, expressionId);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendFormat(".setlocal [{0}]", _variable);
-            _value.Dump(builder);
-            return builder.AppendLine(";");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

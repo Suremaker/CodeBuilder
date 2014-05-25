@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -38,15 +37,6 @@ namespace CodeBuilder.Expressions
             ctx.Compile(_value);
             ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit((_instance != null) ? OpCodes.Stfld : OpCodes.Stsfld, _fieldInfo);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            if (_instance != null)
-                _instance.Dump(builder);
-            builder.AppendFormat(".setField [{0}.{1}] = ", _fieldInfo.DeclaringType, _fieldInfo.Name);
-            _value.Dump(builder);
-            return builder.AppendLine(";");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

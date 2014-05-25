@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -66,20 +65,6 @@ namespace CodeBuilder.Expressions
             ctx.Generator.EndExceptionBlock();
         }
 
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendLine(".try").AppendLine("{");
-            _tryExpression.Dump(builder);
-            builder.AppendLine("}");
-
-            foreach (var catchBlock in _catchBlocks)
-                catchBlock.Dump(builder);
-
-            if (_finallyExpression != null)
-                DumpFinally(builder);
-            return builder;
-        }
-
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
             var start = symbolGenerator.GetCurrentPosition();
@@ -91,13 +76,6 @@ namespace CodeBuilder.Expressions
             if (_finallyExpression != null)
                 symbolGenerator.WriteNamedBlock("finally", _finallyExpression);
             return start.BlockTo(symbolGenerator.GetCurrentPosition());
-        }
-
-        private void DumpFinally(StringBuilder builder)
-        {
-            builder.AppendLine(".finally").AppendLine("{");
-            _finallyExpression.Dump(builder);
-            builder.AppendLine("}");
         }
     }
 }

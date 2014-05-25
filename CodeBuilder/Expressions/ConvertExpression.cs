@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -66,12 +65,6 @@ namespace CodeBuilder.Expressions
             ctx.Compile(Expression);
             ctx.MarkSequencePointFor(expressionId);
             _conversionMethod(ctx);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendFormat("({0}) ", ExpressionType);
-            return Expression.Dump(builder);
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

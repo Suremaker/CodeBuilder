@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -44,11 +43,6 @@ namespace CodeBuilder.Expressions
                 EmitLocalAddress(ctx, local);
             else
                 EmitLocalValue(ctx, local);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            return builder.AppendFormat(".getlocal [{0}]", _variable);
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

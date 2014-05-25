@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -30,20 +29,11 @@ namespace CodeBuilder.Expressions
             ctx.LeaveScope(scope);
         }
 
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendLine("{");
-            foreach (var expression in _expressions)
-                expression.Dump(builder);
-            return builder.AppendLine("}");
-        }
-
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
             var begin = symbolGenerator.GetCurrentPosition();
-            symbolGenerator
-                .Write("{")
-                .EnterScope();
+            symbolGenerator.Write("{");
+            symbolGenerator.EnterScope();
 
             foreach (var expression in _expressions)
                 symbolGenerator.Write(expression);

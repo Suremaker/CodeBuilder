@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -55,16 +54,6 @@ namespace CodeBuilder.Expressions
             ctx.MarkSequencePointFor(expressionId);
 
             EmitArrayAccess(ctx);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            _arrayInstance.Dump(builder);
-            builder.Append(" [");
-            _index.Dump(builder);
-            builder.Append("] = ");
-            _value.Dump(builder);
-            return builder.AppendLine(";");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

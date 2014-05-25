@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
@@ -26,13 +25,6 @@ namespace CodeBuilder.Expressions
 
             data.BreakLabel.Mark();
             ctx.ResetLoopData(data);
-        }
-
-        internal override StringBuilder Dump(StringBuilder builder)
-        {
-            builder.AppendLine(".loop").AppendLine("{");
-            _loop.Dump(builder);
-            return builder.AppendLine("}");
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
