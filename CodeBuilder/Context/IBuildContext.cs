@@ -1,5 +1,6 @@
 using System;
 using System.Reflection.Emit;
+using CodeBuilder.Expressions;
 
 namespace CodeBuilder.Context
 {
@@ -19,7 +20,10 @@ namespace CodeBuilder.Context
         void LeaveScope(Scope scope);
         Scope CurrentScope { get; }
         bool IsSymbolInfoSupported { get; }
+        bool IsSymbolInfoEnabled { get; }
         bool IsInScope<TScope>() where TScope : Scope;
         JumpLabel DefineLabel();
+        void MarkSequencePointFor(int expressionId);
+        void Compile(Expression expression);
     }
 }

@@ -35,7 +35,23 @@ namespace CodeBuilder.Expressions
                 }
         }
 
-        internal override void Compile(IBuildContext ctx)
+        private void CompileTryBlock(IBuildContext ctx)
+        {
+            var scope = ctx.EnterScope<TryScope>();
+            ctx.Compile(_tryExpression);
+            ctx.LeaveScope(scope);
+        }
+
+        private void CompileFinallyBlock(IBuildContext ctx)
+        {
+            ctx.Generator.BeginFinallyBlock();
+
+            var scope = ctx.EnterScope<FinallyScope>();
+            ctx.Compile(_finallyExpression);
+            ctx.LeaveScope(scope);
+        }
+
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             ctx.Generator.BeginExceptionBlock();
 
@@ -50,22 +66,6 @@ namespace CodeBuilder.Expressions
             ctx.Generator.EndExceptionBlock();
         }
 
-        private void CompileTryBlock(IBuildContext ctx)
-        {
-            var scope = ctx.EnterScope<TryScope>();
-            _tryExpression.Compile(ctx);
-            ctx.LeaveScope(scope);
-        }
-
-        private void CompileFinallyBlock(IBuildContext ctx)
-        {
-            ctx.Generator.BeginFinallyBlock();
-
-            var scope = ctx.EnterScope<FinallyScope>();
-            _finallyExpression.Compile(ctx);
-            ctx.LeaveScope(scope);
-        }
-
         internal override StringBuilder Dump(StringBuilder builder)
         {
             builder.AppendLine(".try").AppendLine("{");
@@ -78,6 +78,19 @@ namespace CodeBuilder.Expressions
             if (_finallyExpression != null)
                 DumpFinally(builder);
             return builder;
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            symbolGenerator.WriteNamedBlock("try", _tryExpression);
+
+            foreach (var catchBlock in _catchBlocks)
+                catchBlock.WriteDebugCode(symbolGenerator);
+
+            if (_finallyExpression != null)
+                symbolGenerator.WriteNamedBlock("finally", _finallyExpression);
+            return start.BlockTo(symbolGenerator.GetCurrentPosition());
         }
 
         private void DumpFinally(StringBuilder builder)

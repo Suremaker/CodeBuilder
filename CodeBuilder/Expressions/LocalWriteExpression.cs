@@ -19,9 +19,9 @@ namespace CodeBuilder.Expressions
             _value = value;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            Compile(ctx, ctx.GetLocal(_variable), _value);
+            Compile(ctx, ctx.GetLocal(_variable), _value, expressionId);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -31,9 +31,17 @@ namespace CodeBuilder.Expressions
             return builder.AppendLine(";");
         }
 
-        internal static void Compile(IBuildContext ctx, LocalBuilder local, Expression value)
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
-            value.Compile(ctx);
+            var start = symbolGenerator.GetCurrentPosition();
+            return start.BlockTo(symbolGenerator.Write(_variable.Name).Write(" = ").Write(_value).WriteStatementEnd(";"));
+        }
+
+        internal static void Compile(IBuildContext ctx, LocalBuilder local, Expression value, int expressionId)
+        {
+            ctx.Compile(value);
+
+            ctx.MarkSequencePointFor(expressionId);
             if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Stloc_0);
             else if (local.LocalIndex == 1) ctx.Generator.Emit(OpCodes.Stloc_1);
             else if (local.LocalIndex == 2) ctx.Generator.Emit(OpCodes.Stloc_2);

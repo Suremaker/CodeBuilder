@@ -31,10 +31,12 @@ namespace CodeBuilder.Expressions
             _loadAddress = loadAddress;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             if (_instance != null)
-                _instance.Compile(ctx);
+                ctx.Compile(_instance);
+
+            ctx.MarkSequencePointFor(expressionId);
 
             if (_loadAddress)
                 ctx.Generator.Emit((_instance != null) ? OpCodes.Ldflda : OpCodes.Ldsflda, _fieldInfo);
@@ -47,6 +49,19 @@ namespace CodeBuilder.Expressions
             if (_instance != null)
                 _instance.Dump(builder);
             return builder.AppendFormat(".getField [{0}.{1}]", _fieldInfo.DeclaringType, _fieldInfo.Name);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            if (_instance != null)
+                symbolGenerator.Write(_instance);
+            var start = symbolGenerator.GetCurrentPosition();
+            var end = symbolGenerator
+                .Write(string.Format("{0}.{1}",
+                    (_instance == null) ? _fieldInfo.DeclaringType.FullName : string.Empty,
+                    _fieldInfo.Name))
+                .GetCurrentPosition();
+            return start.BlockTo(end);
         }
 
         protected override Expression ReturnCallableForm()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection.Emit;
 using System.Text;
 using CodeBuilder.Context;
@@ -21,15 +22,6 @@ namespace CodeBuilder.Expressions
         {
             _parameterId = parameterId;
             _loadAddress = loadAddress;
-        }
-
-        internal override void Compile(IBuildContext ctx)
-        {
-            ValidateParameter(ctx);
-            if (_loadAddress)
-                EmitArgumentAddress(ctx);
-            else
-                EmitArgumentValue(ctx);
         }
 
         private void EmitArgumentValue(IBuildContext ctx)
@@ -56,9 +48,24 @@ namespace CodeBuilder.Expressions
                 throw new InvalidOperationException(string.Format("Parameter index {0} is of {1} type, while type {2} is expected", _parameterId, ExpressionType, ctx.Parameters[_parameterId]));
         }
 
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ValidateParameter(ctx);
+            ctx.MarkSequencePointFor(expressionId);
+            if (_loadAddress)
+                EmitArgumentAddress(ctx);
+            else
+                EmitArgumentValue(ctx);
+        }
+
         internal override StringBuilder Dump(StringBuilder builder)
         {
-            return builder.AppendFormat(".arg [{0}] {1}", ExpressionType, _parameterId);
+            return builder.AppendFormat("p{0}", _parameterId);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write(string.Format("p{0}", _parameterId)).GetCurrentPosition());
         }
 
         protected override Expression ReturnCallableForm()

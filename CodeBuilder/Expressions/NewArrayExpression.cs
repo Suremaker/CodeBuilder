@@ -20,10 +20,11 @@ namespace CodeBuilder.Expressions
             _count = count;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _count.Compile(ctx);
+            ctx.Compile(_count);
             EmitHelper.ConvertToNativeInt(ctx, _count.ExpressionType);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Newarr, _elementType);
         }
 
@@ -32,6 +33,12 @@ namespace CodeBuilder.Expressions
             builder.AppendFormat(".array ").Append(_elementType).Append(" [");
             _count.Dump(builder);
             return builder.Append("]");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(
+                symbolGenerator.Write(string.Format("new {0} [", _elementType.FullName)).Write(_count).Write("]").GetCurrentPosition());
         }
     }
 }

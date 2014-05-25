@@ -34,12 +34,12 @@ namespace CodeBuilder.Expressions
         {
             get { return _expressions; }
         }
-
-        internal override void Compile(IBuildContext ctx)
+        
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var scope = ctx.EnterScope<ValueBlockScope>();
             foreach (var expression in _expressions)
-                expression.Compile(ctx);
+                ctx.Compile(expression);
             ctx.LeaveScope(scope);
         }
 
@@ -49,6 +49,23 @@ namespace CodeBuilder.Expressions
             foreach (var expression in _expressions)
                 expression.Dump(builder);
             return builder.AppendLine("}");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator.GetCurrentPosition();
+            symbolGenerator
+                .Write("{")
+                .EnterScope();
+
+            foreach (var expression in _expressions)
+                symbolGenerator.Write(expression);
+
+            var end = symbolGenerator
+                .LeaveScope()
+                .WriteStatementEnd("}");
+
+            return begin.BlockTo(end);
         }
     }
 }

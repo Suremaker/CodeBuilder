@@ -14,14 +14,20 @@ namespace CodeBuilder.Expressions
             Validators.ReferenceTypeCheck(type, "type");
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Ldnull);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
         {
             return builder.Append("null");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write("null").GetCurrentPosition());
         }
     }
 }

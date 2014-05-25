@@ -19,12 +19,12 @@ namespace CodeBuilder.Expressions
             _thenExpression = ExprHelper.PopIfNeeded(thenExpression);
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _predicate.Compile(ctx);
+            ctx.Compile(_predicate);
             var label = ctx.DefineLabel();
             label.EmitGoto(OpCodes.Brfalse); //TODO: use Brfalse_s if possible
-            _thenExpression.Compile(ctx);
+            ctx.Compile(_thenExpression);
             label.Mark();
         }
 
@@ -35,6 +35,17 @@ namespace CodeBuilder.Expressions
             builder.AppendLine(")").AppendLine("{");
             _thenExpression.Dump(builder);
             return builder.AppendLine("}");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            symbolGenerator
+                .Write("if (")
+                .Write(_predicate)
+                .Write(") ")
+                .Write(_thenExpression);
+            return start.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

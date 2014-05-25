@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection.Emit;
 using System.Text;
 using CodeBuilder.Context;
@@ -138,14 +139,32 @@ namespace CodeBuilder.Expressions
             return OpCodes.Ldc_I4;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
+            ctx.MarkSequencePointFor(expressionId);
             _action(ctx);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
         {
-            return builder.AppendFormat(".const [{0}] {1}", ExpressionType, _value);
+            if (ExpressionType == typeof(string))
+                return builder.AppendFormat("\"{0}\"", _value);
+            if (ExpressionType == typeof(Type))
+                return builder.AppendFormat("typeof({0})", _value);
+            return builder.Append(string.Format(CultureInfo.InvariantCulture, "{0}", _value));
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator.GetCurrentPosition();
+
+            if (ExpressionType == typeof(string))
+                symbolGenerator.Write(string.Format("\"{0}\"", ((string)_value).Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t").Replace("\"", "\\\"")));
+            else if (ExpressionType == typeof(Type))
+                symbolGenerator.Write(string.Format("typeof({0})", _value));
+            else
+                symbolGenerator.Write(string.Format(CultureInfo.InvariantCulture, "{0}", _value));
+            return begin.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

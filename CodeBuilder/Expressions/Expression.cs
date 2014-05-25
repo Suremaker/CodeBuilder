@@ -12,8 +12,9 @@ namespace CodeBuilder.Expressions
         }
 
         public Type ExpressionType { get; private set; }
-        internal abstract void Compile(IBuildContext ctx);
+        internal abstract void Compile(IBuildContext ctx,int expressionId);
         internal abstract StringBuilder Dump(StringBuilder builder);
+        internal abstract CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator);
 
         public override string ToString()
         {

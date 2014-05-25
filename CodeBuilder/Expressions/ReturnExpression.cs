@@ -28,15 +28,6 @@ namespace CodeBuilder.Expressions
 
         public Type ReturnType { get; private set; }
 
-        internal override void Compile(IBuildContext ctx)
-        {
-            ValidateReturnType(ctx);
-            ValidateScope(ctx);
-            if (_value != null)
-                _value.Compile(ctx);
-            ctx.Generator.Emit(OpCodes.Ret);
-        }
-
         private void ValidateScope(IBuildContext ctx)
         {
             ctx.CurrentScope.ValidateJumpOutTo(null, ScopeJumpType.Return, "Return expression is forbidden in {0} scope");
@@ -47,13 +38,34 @@ namespace CodeBuilder.Expressions
             Validators.HierarchyCheck(ReturnType, ctx.ReturnType, "Method return type is {0}, while return statement is returning {1}", "ReturnType");
         }
 
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ValidateReturnType(ctx);
+            ValidateScope(ctx);
+
+            if (_value != null)
+                ctx.Compile(_value);
+
+            ctx.MarkSequencePointFor(expressionId);
+            ctx.Generator.Emit(OpCodes.Ret);
+        }
+
         internal override StringBuilder Dump(StringBuilder builder)
         {
-            if (_value == null)
-                return builder.AppendLine(".return;");
-            builder.Append(".return ");
-            _value.Dump(builder);
+            builder.Append("return ");
+            if (_value != null)
+                _value.Dump(builder);
             return builder.Append(";");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            if (_value != null)
+                symbolGenerator.Write("return ").Write(_value);
+            else
+                symbolGenerator.Write("return");
+            return start.BlockTo(symbolGenerator.WriteStatementEnd(";"));
         }
     }
 }

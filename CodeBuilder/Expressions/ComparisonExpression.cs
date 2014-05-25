@@ -37,10 +37,11 @@ namespace CodeBuilder.Expressions
             throw new ArgumentException(string.Format("Comparison of {0} and {1} is not supported. Try to cast left or right value to corresponding type.", left, right));
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _left.Compile(ctx);
-            _right.Compile(ctx);
+            ctx.Compile(_left);
+            ctx.Compile(_right);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(GetOpCode(CollectionHelper.Contains(_unsigned, _left.ExpressionType)));
         }
 
@@ -52,6 +53,12 @@ namespace CodeBuilder.Expressions
             _left.Dump(builder);
             builder.Append(GetDumpSymbol());
             return _right.Dump(builder);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator.GetCurrentPosition();
+            return begin.BlockTo(symbolGenerator.Write(_left).Write(GetDumpSymbol()).Write(_right).GetCurrentPosition());
         }
 
         protected abstract string GetDumpSymbol();

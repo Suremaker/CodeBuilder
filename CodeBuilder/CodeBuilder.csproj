@@ -35,6 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CatchBlock.cs" />
+    <Compile Include="CodePosition.cs" />
     <Compile Include="Context\BuildContext.cs" />
     <Compile Include="Context\IBuildContext.cs" />
     <Compile Include="Context\JumpLabel.cs" />
@@ -85,6 +86,8 @@
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="Expressions\IfThenExpression.cs" />
+    <Compile Include="IMethodSymbolGenerator.cs" />
+    <Compile Include="ISymbolGenerator.cs" />
     <Compile Include="LocalVariable.cs" />
     <Compile Include="MethodBodyBuilder.cs" />
     <Compile Include="Expressions\NewExpression.cs" />

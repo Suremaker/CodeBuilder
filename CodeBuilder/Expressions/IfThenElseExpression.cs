@@ -25,19 +25,19 @@ namespace CodeBuilder.Expressions
             _elseExpression = (thenExpression.ExpressionType == typeof(void) && elseExpression.ExpressionType != typeof(void)) ? Expr.Pop(elseExpression) : elseExpression;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var trueLabel = ctx.DefineLabel();
             var endLabel = ctx.DefineLabel();
 
-            _predicate.Compile(ctx);
+            ctx.Compile(_predicate);
             trueLabel.EmitGoto(OpCodes.Brtrue); //TODO: use Brtrue_s if possible
 
-            _elseExpression.Compile(ctx);
+            ctx.Compile(_elseExpression);
             endLabel.EmitGoto(OpCodes.Br); //TODO: use Br_s if possible
 
             trueLabel.Mark();
-            _thenExpression.Compile(ctx);
+            ctx.Compile(_thenExpression);
 
             endLabel.Mark();
         }
@@ -51,6 +51,32 @@ namespace CodeBuilder.Expressions
             builder.AppendLine("}").AppendLine("else").AppendLine("{");
             _elseExpression.Dump(builder);
             return builder.AppendLine("}");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            if (ExpressionType == typeof(void))
+            {
+                symbolGenerator
+                    .Write("if (")
+                    .Write(_predicate)
+                    .Write(") ")
+                    .Write(_thenExpression)
+                    .Write("else ")
+                    .Write(_elseExpression);
+            }
+            else
+            {
+                symbolGenerator
+                    .Write("(")
+                    .Write(_predicate)
+                    .Write(") ? ")
+                    .Write(_thenExpression)
+                    .Write(" : ")
+                    .Write(_elseExpression);
+            }
+            return start.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

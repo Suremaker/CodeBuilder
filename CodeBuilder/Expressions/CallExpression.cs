@@ -34,17 +34,25 @@ namespace CodeBuilder.Expressions
             _forceNonVirtualCall = forceNonVirtualCall;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        private string GetMethodCodeHeader()
+        {
+            return string.Format("{0}.{1}(", (_instance == null) ? _methodInfo.DeclaringType.FullName : "", _methodInfo.Name);
+        }
+
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var forceNonVirtualCall = _forceNonVirtualCall;
             if (_instance != null)
             {
-                _instance.Compile(ctx);
+                ctx.Compile(_instance);
                 if (_instance.ExpressionType.IsValueType)
                     forceNonVirtualCall = true;
             }
-            foreach (var value in _arguments)
-                value.Compile(ctx);
+
+            foreach (var argument in _arguments)
+                ctx.Compile(argument);
+
+            ctx.MarkSequencePointFor(expressionId);
 
             if (!forceNonVirtualCall && _methodInfo.IsVirtual && !_methodInfo.IsFinal)
                 ctx.Generator.Emit(OpCodes.Callvirt, _methodInfo.GetBaseDefinition());
@@ -56,13 +64,28 @@ namespace CodeBuilder.Expressions
         {
             if (_instance != null)
                 _instance.Dump(builder);
-            builder.AppendFormat(".call [{0}] (", _methodInfo);
+            builder.Append(GetMethodCodeHeader());
             for (int i = 0; i < _arguments.Length; ++i)
             {
                 _arguments[i].Dump(builder);
                 if (i + 1 < _arguments.Length) builder.Append(", ");
             }
             return builder.Append(")");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator.GetCurrentPosition();
+            if (_instance != null)
+                symbolGenerator.Write(_instance);
+            symbolGenerator.Write(GetMethodCodeHeader());
+            for (int i = 0; i < _arguments.Length; ++i)
+            {
+                symbolGenerator.Write(_arguments[i]);
+                if (i + 1 < _arguments.Length)
+                    symbolGenerator.Write(", ");
+            }
+            return begin.BlockTo(symbolGenerator.Write(")").GetCurrentPosition());
         }
     }
 }

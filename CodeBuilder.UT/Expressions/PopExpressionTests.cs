@@ -34,7 +34,7 @@ namespace CodeBuilder.UT.Expressions
             var generator = method.GetILGenerator();
 
             generator.Emit(OpCodes.Ldc_I4_4);
-            Expr.Pop(Expr.Constant(-1)).Compile(new BuildContext(generator, typeof(int), new Type[0], false));
+            Expr.Pop(Expr.Constant(-1)).Compile(new BuildContext(generator, typeof(int), new Type[0], null, false), 0);
             generator.Emit(OpCodes.Ret);
             var func = (Func<int>)method.CreateDelegate(typeof(Func<int>));
 

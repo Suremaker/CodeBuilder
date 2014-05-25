@@ -33,22 +33,23 @@ namespace CodeBuilder.Expressions
             return string.Format("No matching constructor found for type {0} with parameters: [{1}]", type, StringFormat.Join(types, ", "));
         }
 
-        internal override void Compile(IBuildContext ctx)
-        {
-            foreach (var argument in _arguments)
-                argument.Compile(ctx);
-            if (_constructorInfo == null)
-                EmitStructInit(ctx);
-            else
-                ctx.Generator.Emit(OpCodes.Newobj, _constructorInfo);
-        }
-
         private void EmitStructInit(IBuildContext ctx)
         {
             var local = ctx.Generator.DeclareLocal(ExpressionType);
             ctx.Generator.Emit(OpCodes.Ldloca, local);
             ctx.Generator.Emit(OpCodes.Initobj, ExpressionType);
             ctx.Generator.Emit(OpCodes.Ldloc, local);
+        }
+
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            foreach (var argument in _arguments)
+                ctx.Compile(argument);
+            ctx.MarkSequencePointFor(expressionId);
+            if (_constructorInfo == null)
+                EmitStructInit(ctx);
+            else
+                ctx.Generator.Emit(OpCodes.Newobj, _constructorInfo);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -60,6 +61,18 @@ namespace CodeBuilder.Expressions
                 if (i + 1 < _arguments.Length) builder.Append(", ");
             }
             return builder.Append(")");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            symbolGenerator.Write(string.Format("new {0}(", ExpressionType.FullName));
+            for (int i = 0; i < _arguments.Length; i++)
+            {
+                symbolGenerator.Write(_arguments[i]);
+                if (i + 1 < _arguments.Length) symbolGenerator.Write(", ");
+            }
+            return start.BlockTo(symbolGenerator.Write(")").GetCurrentPosition());
         }
     }
 }

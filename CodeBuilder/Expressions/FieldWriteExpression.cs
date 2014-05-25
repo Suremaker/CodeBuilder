@@ -31,11 +31,12 @@ namespace CodeBuilder.Expressions
             _value = value;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             if (_instance != null)
-                _instance.Compile(ctx);
-            _value.Compile(ctx);
+                ctx.Compile(_instance);
+            ctx.Compile(_value);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit((_instance != null) ? OpCodes.Stfld : OpCodes.Stsfld, _fieldInfo);
         }
 
@@ -46,6 +47,18 @@ namespace CodeBuilder.Expressions
             builder.AppendFormat(".setField [{0}.{1}] = ", _fieldInfo.DeclaringType, _fieldInfo.Name);
             _value.Dump(builder);
             return builder.AppendLine(";");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            if (_instance != null)
+                symbolGenerator.Write(_instance);
+            var start = symbolGenerator.GetCurrentPosition();
+            var end = symbolGenerator
+                .Write(string.Format("{0}.{1} = ", (_instance == null) ? _fieldInfo.DeclaringType.FullName : string.Empty, _fieldInfo.Name))
+                .Write(_value)
+                .WriteStatementEnd(";");
+            return start.BlockTo(end);
         }
     }
 }

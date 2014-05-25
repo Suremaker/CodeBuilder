@@ -31,9 +31,10 @@ namespace CodeBuilder.Expressions
             throw new ArgumentException(string.Format("Expected integral type, got: {0}", value.ExpressionType), "value");
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _value.Compile(ctx);
+            ctx.Compile(_value);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Not);
         }
 
@@ -41,6 +42,11 @@ namespace CodeBuilder.Expressions
         {
             builder.Append("~");
             return _value.Dump(builder);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write("~").Write(_value).GetCurrentPosition());
         }
     }
 }

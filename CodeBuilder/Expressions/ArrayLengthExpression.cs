@@ -16,9 +16,10 @@ namespace CodeBuilder.Expressions
             _arrayInstance = arrayInstance;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _arrayInstance.Compile(ctx);
+            ctx.Compile(_arrayInstance);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Ldlen);//native int
             ctx.Generator.Emit(OpCodes.Conv_I4);
         }
@@ -27,6 +28,15 @@ namespace CodeBuilder.Expressions
         {
             builder.Append(".length ");
             return _arrayInstance.Dump(builder);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator
+                .Write(_arrayInstance)
+                .GetCurrentPosition();
+
+            return begin.BlockTo(symbolGenerator.Write(".Length()").GetCurrentPosition());
         }
     }
 }

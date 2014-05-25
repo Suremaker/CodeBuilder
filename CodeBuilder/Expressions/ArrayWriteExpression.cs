@@ -25,27 +25,36 @@ namespace CodeBuilder.Expressions
             _value = value;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        private void EmitArrayAccess(IBuildContext ctx)
         {
-            _arrayInstance.Compile(ctx);
-            _index.Compile(ctx);
-            EmitHelper.ConvertToNativeInt(ctx, _index.ExpressionType);
-            _value.Compile(ctx);
-
-            if (ExpressionType == typeof(sbyte))
+            if (ExpressionType == typeof (sbyte))
                 ctx.Generator.Emit(OpCodes.Stelem_I1);
-            else if (ExpressionType == typeof(short))
+            else if (ExpressionType == typeof (short))
                 ctx.Generator.Emit(OpCodes.Stelem_I2);
-            else if (ExpressionType == typeof(int))
+            else if (ExpressionType == typeof (int))
                 ctx.Generator.Emit(OpCodes.Stelem_I4);
-            else if (ExpressionType == typeof(long))
+            else if (ExpressionType == typeof (long))
                 ctx.Generator.Emit(OpCodes.Stelem_I8);
-            else if (ExpressionType == typeof(float))
+            else if (ExpressionType == typeof (float))
                 ctx.Generator.Emit(OpCodes.Stelem_R4);
-            else if (ExpressionType == typeof(double))
+            else if (ExpressionType == typeof (double))
                 ctx.Generator.Emit(OpCodes.Stelem_R8);
             else
                 ctx.Generator.Emit(OpCodes.Stelem, _elementType);
+        }
+
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ctx.Compile(_arrayInstance);
+
+            ctx.Compile(_index);
+            EmitHelper.ConvertToNativeInt(ctx, _index.ExpressionType);
+
+            ctx.Compile(_value);
+
+            ctx.MarkSequencePointFor(expressionId);
+
+            EmitArrayAccess(ctx);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -53,7 +62,22 @@ namespace CodeBuilder.Expressions
             _arrayInstance.Dump(builder);
             builder.Append(" [");
             _index.Dump(builder);
-            return builder.Append("]");
+            builder.Append("] = ");
+            _value.Dump(builder);
+            return builder.AppendLine(";");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var begin = symbolGenerator.GetCurrentPosition();
+            var end = symbolGenerator
+                .Write(_arrayInstance)
+                .Write(" [")
+                .Write(_index)
+                .Write("] = ")
+                .Write(_value)
+                .WriteStatementEnd(";");
+            return begin.BlockTo(end);
         }
     }
 }

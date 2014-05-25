@@ -12,14 +12,19 @@ namespace CodeBuilder.Expressions
         {
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             //value is already on stack
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
         {
-            return builder.AppendFormat("$ [{0}]", ExpressionType);
+            return builder;
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

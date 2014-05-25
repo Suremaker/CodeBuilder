@@ -23,12 +23,12 @@ namespace CodeBuilder.Expressions
             _initialValue = initialValue;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var local = ctx.DeclareLocal(_variable);
 
             if (_initialValue != null)
-                LocalWriteExpression.Compile(ctx, local, _initialValue);
+                LocalWriteExpression.Compile(ctx, local, _initialValue, expressionId);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -40,6 +40,15 @@ namespace CodeBuilder.Expressions
                 _initialValue.Dump(builder);
             }
             return builder.AppendLine(";");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            symbolGenerator.Write(string.Format("{0} {1}", _variable.VariableType.FullName, _variable.Name));
+            if (_initialValue != null)
+                symbolGenerator.Write(" = ").Write(_initialValue);
+            return start.BlockTo(symbolGenerator.WriteStatementEnd(";"));
         }
     }
 }

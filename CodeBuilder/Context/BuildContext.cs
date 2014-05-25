@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using CodeBuilder.Expressions;
 
 namespace CodeBuilder.Context
 {
@@ -8,10 +9,12 @@ namespace CodeBuilder.Context
     {
         private readonly Stack<Scope> _scopes = new Stack<Scope>();
         private readonly Stack<LoopData> _loopData = new Stack<LoopData>();
+        private int _expressionId = 0;
 
-        public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, bool isSymbolInfoSupported = true)
+        public BuildContext(ILGenerator generator, Type returnType, Type[] parameters, IMethodSymbolGenerator symbolGenerator, bool isSymbolInfoSupported = true)
         {
             Parameters = parameters;
+            SymbolGenerator = symbolGenerator;
             IsSymbolInfoSupported = isSymbolInfoSupported;
             ReturnType = returnType;
             Generator = generator;
@@ -20,8 +23,12 @@ namespace CodeBuilder.Context
 
         public Type ReturnType { get; private set; }
         public Type[] Parameters { get; private set; }
+        public IMethodSymbolGenerator SymbolGenerator { get; private set; }
+
         public ILGenerator Generator { get; private set; }
         public bool IsSymbolInfoSupported { get; private set; }
+        public bool IsSymbolInfoEnabled { get { return IsSymbolInfoSupported && SymbolGenerator != null; } }
+
         public bool IsInScope<TScope>() where TScope : Scope
         {
             var scope = CurrentScope;
@@ -36,6 +43,12 @@ namespace CodeBuilder.Context
         public JumpLabel DefineLabel()
         {
             return new JumpLabel(this);
+        }
+
+        public void MarkSequencePointFor(int expressionId)
+        {
+            if(IsSymbolInfoEnabled)
+                SymbolGenerator.MarkSequencePoint(Generator,expressionId);
         }
 
         public Scope CurrentScope { get { return _scopes.Peek(); } }
@@ -106,6 +119,21 @@ namespace CodeBuilder.Context
             if (!Equals(actual, value))
                 throw new InvalidOperationException(errorMessage);
             stack.Pop();
+        }
+
+        public void Compile(IEnumerable<Expression> expressions)
+        {
+            foreach (var expression in expressions)
+            {
+                if (IsSymbolInfoEnabled)
+                    SymbolGenerator.Write(expression);
+                Compile(expression);
+            }
+        }
+
+        public void Compile(Expression expression)
+        {
+            expression.Compile(this, _expressionId++);
         }
     }
 }

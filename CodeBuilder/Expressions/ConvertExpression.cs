@@ -40,12 +40,6 @@ namespace CodeBuilder.Expressions
             return EmitNothing;
         }
 
-        internal override void Compile(IBuildContext ctx)
-        {
-            Expression.Compile(ctx);
-            _conversionMethod(ctx);
-        }
-
         private void EmitBox(IBuildContext ctx)
         {
             ctx.Generator.Emit(OpCodes.Box, Expression.ExpressionType);
@@ -67,10 +61,26 @@ namespace CodeBuilder.Expressions
         {
         }
 
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ctx.Compile(Expression);
+            ctx.MarkSequencePointFor(expressionId);
+            _conversionMethod(ctx);
+        }
+
         internal override StringBuilder Dump(StringBuilder builder)
         {
             builder.AppendFormat("({0}) ", ExpressionType);
             return Expression.Dump(builder);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start = symbolGenerator.GetCurrentPosition();
+            return start.BlockTo(symbolGenerator
+                .Write(string.Format("({0}) ", ExpressionType.FullName))
+                .Write(Expression)
+                .GetCurrentPosition());
         }
     }
 }

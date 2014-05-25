@@ -15,13 +15,13 @@ namespace CodeBuilder.Expressions
             _loop = ExprHelper.PopIfNeeded(loop);
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
             var data = new LoopData(ctx.DefineLabel(), ctx.DefineLabel());
             ctx.SetLoopData(data);
 
             data.ContinueLabel.Mark();
-            _loop.Compile(ctx);
+            ctx.Compile(_loop);
             data.ContinueLabel.EmitGoto(OpCodes.Br);
 
             data.BreakLabel.Mark();
@@ -33,6 +33,11 @@ namespace CodeBuilder.Expressions
             builder.AppendLine(".loop").AppendLine("{");
             _loop.Dump(builder);
             return builder.AppendLine("}");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.WriteNamedBlock("while (true)", _loop).GetCurrentPosition());
         }
     }
 }

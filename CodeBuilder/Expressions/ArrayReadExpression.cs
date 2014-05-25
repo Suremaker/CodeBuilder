@@ -19,12 +19,8 @@ namespace CodeBuilder.Expressions
             _index = index;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        private void EmitArrayAccess(IBuildContext ctx)
         {
-            _arrayInstance.Compile(ctx);
-            _index.Compile(ctx);
-            EmitHelper.ConvertToNativeInt(ctx, _index.ExpressionType);
-
             if (ExpressionType == typeof(byte))
                 ctx.Generator.Emit(OpCodes.Ldelem_U1);
             else if (ExpressionType == typeof(sbyte))
@@ -43,8 +39,20 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit(OpCodes.Ldelem_R4);
             else if (ExpressionType == typeof(double))
                 ctx.Generator.Emit(OpCodes.Ldelem_R8);
-            else 
+            else
                 ctx.Generator.Emit(OpCodes.Ldelem, ExpressionType);
+        }
+
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ctx.Compile(_arrayInstance);
+
+            ctx.Compile(_index);
+            EmitHelper.ConvertToNativeInt(ctx, _index.ExpressionType);
+
+            ctx.MarkSequencePointFor(expressionId);
+
+            EmitArrayAccess(ctx);
         }
 
         internal override StringBuilder Dump(StringBuilder builder)
@@ -53,6 +61,17 @@ namespace CodeBuilder.Expressions
             builder.Append(" [");
             _index.Dump(builder);
             return builder.Append("]");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var location = symbolGenerator.GetCurrentPosition();
+            symbolGenerator
+                .Write(_arrayInstance)
+                .Write(" [")
+                .Write(_index)
+                .Write("]");
+            return location.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }
 }

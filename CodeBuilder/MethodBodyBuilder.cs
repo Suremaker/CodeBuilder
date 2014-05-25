@@ -14,25 +14,27 @@ namespace CodeBuilder
         private readonly List<Expression> _statements = new List<Expression>();
         private readonly BuildContext _ctx;
 
-        public MethodBodyBuilder(MethodBuilder methodBuilder, params Type[] parameters)
+        public MethodBodyBuilder(MethodBuilder methodBuilder, params Type[] parameters) : this(null, methodBuilder, parameters) { }
+        public MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, MethodBuilder methodBuilder, params Type[] parameters)
         {
             Validators.NullCheck(methodBuilder, "methodBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
-            _ctx = new BuildContext(methodBuilder.GetILGenerator(), methodBuilder.ReturnType, PrepareParameters(methodBuilder, parameters));
+            _ctx = new BuildContext(methodBuilder.GetILGenerator(), methodBuilder.ReturnType, PrepareParameters(methodBuilder, parameters), symbolGenerator);
         }
 
-        public MethodBodyBuilder(ConstructorBuilder ctorBuilder, params Type[] parameters)
+        public MethodBodyBuilder(ConstructorBuilder ctorBuilder, params Type[] parameters) : this(null, ctorBuilder, parameters) { }
+        public MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, ConstructorBuilder ctorBuilder, params Type[] parameters)
         {
             Validators.NullCheck(ctorBuilder, "ctorBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
-            _ctx = new BuildContext(ctorBuilder.GetILGenerator(), typeof(void), PrepareParameters(ctorBuilder, parameters));
+            _ctx = new BuildContext(ctorBuilder.GetILGenerator(), typeof(void), PrepareParameters(ctorBuilder, parameters), symbolGenerator);
         }
 
         public MethodBodyBuilder(DynamicMethod dynamicMethod, params Type[] parameters)
         {
             Validators.NullCheck(dynamicMethod, "methodBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
-            _ctx = new BuildContext(dynamicMethod.GetILGenerator(), dynamicMethod.ReturnType, PrepareParameters(dynamicMethod, parameters), false);
+            _ctx = new BuildContext(dynamicMethod.GetILGenerator(), dynamicMethod.ReturnType, PrepareParameters(dynamicMethod, parameters), null, false);
         }
 
         private Type[] PrepareParameters(MethodBase methodBase, Type[] parameters)
@@ -71,8 +73,7 @@ namespace CodeBuilder
                 AddStatement(Expr.Return());
             }
 
-            foreach (var statement in _statements)
-                statement.Compile(_ctx);
+            _ctx.Compile(_statements);
         }
 
         public override string ToString()

@@ -17,9 +17,10 @@ namespace CodeBuilder.Expressions
             _expression = expression;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _expression.Compile(ctx);
+            ctx.Compile(_expression);
+            ctx.MarkSequencePointFor(expressionId);
             ctx.Generator.Emit(OpCodes.Throw);
         }
 
@@ -28,6 +29,11 @@ namespace CodeBuilder.Expressions
             builder.Append(".throw ");
             _expression.Dump(builder);
             return builder.AppendLine(";");
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write("throw ").Write(_expression).WriteStatementEnd(";"));
         }
     }
 }

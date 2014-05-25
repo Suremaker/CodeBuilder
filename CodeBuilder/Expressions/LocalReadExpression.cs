@@ -17,16 +17,7 @@ namespace CodeBuilder.Expressions
             _variable = variable;
             _loadAddress = loadAddress;
         }
-
-        internal override void Compile(IBuildContext ctx)
-        {
-            var local = ctx.GetLocal(_variable);
-            if (_loadAddress)
-                EmitLocalAddress(ctx, local);
-            else
-                EmitLocalValue(ctx, local);
-        }
-
+        
         private static void EmitLocalValue(IBuildContext ctx, LocalBuilder local)
         {
             if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Ldloc_0);
@@ -45,9 +36,25 @@ namespace CodeBuilder.Expressions
                 ctx.Generator.Emit(OpCodes.Ldloca, local);
         }
 
+        internal override void Compile(IBuildContext ctx, int expressionId)
+        {
+            ctx.MarkSequencePointFor(expressionId);
+            var local = ctx.GetLocal(_variable);
+            if (_loadAddress)
+                EmitLocalAddress(ctx, local);
+            else
+                EmitLocalValue(ctx, local);
+        }
+
         internal override StringBuilder Dump(StringBuilder builder)
         {
             return builder.AppendFormat(".getlocal [{0}]", _variable);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            var start=symbolGenerator.GetCurrentPosition();
+            return start.BlockTo(symbolGenerator.Write(_variable.Name).GetCurrentPosition());
         }
 
         protected override Expression ReturnCallableForm()

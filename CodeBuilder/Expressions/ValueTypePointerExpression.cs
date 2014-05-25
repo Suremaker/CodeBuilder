@@ -18,9 +18,9 @@ namespace CodeBuilder.Expressions
             _expression = expression;
         }
 
-        internal override void Compile(IBuildContext ctx)
+        internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            _expression.Compile(ctx);
+            ctx.Compile(_expression);
             var local = ctx.Generator.DeclareLocal(_expression.ExpressionType);
             ctx.Generator.Emit(OpCodes.Stloc, local);
             ctx.Generator.Emit(OpCodes.Ldloca, local);
@@ -29,6 +29,11 @@ namespace CodeBuilder.Expressions
         internal override StringBuilder Dump(StringBuilder builder)
         {
             return _expression.Dump(builder);
+        }
+
+        internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
+        {
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write(_expression).GetCurrentPosition());
         }
 
         protected override Expression ReturnCallableForm()
