@@ -49,10 +49,10 @@ namespace CodeBuilder.Expressions
                 symbolGenerator
                     .Write("if (")
                     .Write(_predicate)
-                    .Write(") ")
-                    .Write(_thenExpression)
+                    .Write(")")
+                    .WriteNamedBlock("", _thenExpression)
                     .Write("else ")
-                    .Write(_elseExpression);
+                    .WriteNamedBlock("", _elseExpression);
             }
             else
             {

@@ -49,12 +49,18 @@ namespace CodeBuilder.Expressions
                 .Write("{")
                 .EnterScope();
 
-            foreach (var expression in _expressions)
-                symbolGenerator.Write(expression);
+            for (int index = 0; index < _expressions.Length; index++)
+            {
+                if (index + 1 < _expressions.Length)
+                    symbolGenerator.Write(_expressions[index]);
+                else
+                    symbolGenerator.Write("return ").Write(_expressions[index]).Write(";");
+            }
 
             var end = symbolGenerator
                 .LeaveScope()
-                .WriteStatementEnd("}");
+                .Write("}")
+                .GetCurrentPosition();
 
             return begin.BlockTo(end);
         }

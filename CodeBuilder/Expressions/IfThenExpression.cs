@@ -33,8 +33,8 @@ namespace CodeBuilder.Expressions
             symbolGenerator
                 .Write("if (")
                 .Write(_predicate)
-                .Write(") ")
-                .Write(_thenExpression);
+                .Write(")")
+                .WriteNamedBlock("", _thenExpression);
             return start.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }

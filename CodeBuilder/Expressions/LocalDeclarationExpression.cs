@@ -1,4 +1,5 @@
-﻿using CodeBuilder.Context;
+﻿using System.Reflection.Emit;
+using CodeBuilder.Context;
 using CodeBuilder.Helpers;
 
 namespace CodeBuilder.Expressions
@@ -27,7 +28,12 @@ namespace CodeBuilder.Expressions
             var local = ctx.DeclareLocal(_variable);
 
             if (_initialValue != null)
-                LocalWriteExpression.Compile(ctx, local, _initialValue, expressionId);
+            {
+                ctx.Compile(_initialValue);
+
+                ctx.MarkSequencePointFor(expressionId);
+                LocalWriteExpression.EmitWriteLocal(ctx, local);
+            }
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)

@@ -20,7 +20,9 @@ namespace CodeBuilder.Expressions
 
         internal override void Compile(IBuildContext ctx, int expressionId)
         {
-            Compile(ctx, ctx.GetLocal(_variable), _value, expressionId);
+            ctx.Compile(_value);
+            ctx.MarkSequencePointFor(expressionId);
+            EmitWriteLocal(ctx, ctx.GetLocal(_variable));
         }
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
@@ -29,11 +31,8 @@ namespace CodeBuilder.Expressions
             return start.BlockTo(symbolGenerator.Write(_variable.Name).Write(" = ").Write(_value).WriteStatementEnd(";"));
         }
 
-        internal static void Compile(IBuildContext ctx, LocalBuilder local, Expression value, int expressionId)
+        internal static void EmitWriteLocal(IBuildContext ctx, LocalBuilder local)
         {
-            ctx.Compile(value);
-
-            ctx.MarkSequencePointFor(expressionId);
             if (local.LocalIndex == 0) ctx.Generator.Emit(OpCodes.Stloc_0);
             else if (local.LocalIndex == 1) ctx.Generator.Emit(OpCodes.Stloc_1);
             else if (local.LocalIndex == 2) ctx.Generator.Emit(OpCodes.Stloc_2);

@@ -61,15 +61,13 @@ namespace CodeBuilder
         public IMethodSymbolGenerator EnterScope()
         {
             ++_scope;
-            MoveToNewLine();
-            return this;
+            return MoveToNewLine();
         }
 
         public IMethodSymbolGenerator LeaveScope()
         {
             --_scope;
-            MoveToNewLine();
-            return this;
+            return MoveToNewLine();
         }
 
         public IMethodSymbolGenerator WriteNamedBlock(string blockHeader, params Expression[] blockStatements)
@@ -89,13 +87,14 @@ namespace CodeBuilder
             return this;
         }
 
-        private void MoveToNewLine()
+        private MethodSymbolGenerator MoveToNewLine()
         {
             _codeWriter.WriteLine();
             ++_currentLine;
             _currentColumn = _scope;
             for (int i = 0; i < _scope; ++i)
                 _codeWriter.Write('\t');
+            return this;
         }
     }
 }

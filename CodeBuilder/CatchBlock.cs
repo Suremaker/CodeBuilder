@@ -29,9 +29,7 @@ namespace CodeBuilder
             Validators.HierarchyCheck(exceptionType, exceptionVariable.VariableType, "Unable to assign exception of type {0} to local of type {1}", "exceptionVariable");
             ExceptionType = exceptionType;
             _exceptionVariable = exceptionVariable;
-            _preCatchExpression = declareVariable
-                ? (Expression)Expr.DeclareLocal(exceptionVariable, new ValueOnStackExpression(exceptionType))
-                : Expr.WriteLocal(exceptionVariable, new ValueOnStackExpression(exceptionType));
+            _preCatchExpression = new ExceptionCatchInitializerExpression(exceptionType, exceptionVariable, declareVariable);
             _catchExpression = ExprHelper.PopIfNeeded(catchExpression);
         }
         public CatchBlock(Type exceptionType, LocalVariable exceptionVariable, Expression catchExpression)
@@ -47,7 +45,7 @@ namespace CodeBuilder
             Validators.NullCheck(catchExpression, "catchExpression");
             Validators.HierarchyCheck(exceptionType, typeof(Exception), "Provided type {0} has to be deriving from {1}", "exceptionType");
             ExceptionType = exceptionType;
-            _preCatchExpression = Expr.Pop(new ValueOnStackExpression(exceptionType));
+            _preCatchExpression = new ExceptionCatchInitializerExpression(exceptionType, null, false);
             _catchExpression = ExprHelper.PopIfNeeded(catchExpression);
         }
 
@@ -59,7 +57,7 @@ namespace CodeBuilder
         {
             Validators.NullCheck(catchExpression, "catchExpression");
             ExceptionType = typeof(object);
-            _preCatchExpression = Expr.Pop(new ValueOnStackExpression(ExceptionType));
+            _preCatchExpression = new ExceptionCatchInitializerExpression(ExceptionType, null, false);
             _catchExpression = ExprHelper.PopIfNeeded(catchExpression);
         }
 
@@ -74,13 +72,9 @@ namespace CodeBuilder
 
         internal void WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
-            var catchBlock = (ExceptionType == typeof(object))
-                ? "catch"
-                : ((_exceptionVariable != null)
-                    ? string.Format("catch ({0} {1})", ExceptionType.FullName, _exceptionVariable.Name)
-                    : string.Format("catch ({0})", ExceptionType.FullName));
-
-            symbolGenerator.WriteNamedBlock(catchBlock, _preCatchExpression, _catchExpression).GetCurrentPosition();
+            symbolGenerator
+                .Write(_preCatchExpression)
+                .WriteNamedBlock("", _catchExpression);
         }
     }
 }

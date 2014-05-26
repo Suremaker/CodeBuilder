@@ -54,6 +54,7 @@
     <Compile Include="Expressions\ConvertUncheckedExpression.cs" />
     <Compile Include="Expressions\EmptyExpression.cs" />
     <Compile Include="Expressions\EqualExpression.cs" />
+    <Compile Include="Expressions\ExceptionCatchInitializerExpression.cs" />
     <Compile Include="Expressions\Expression.cs" />
     <Compile Include="Expressions\ConstExpression.cs" />
     <Compile Include="Expr.cs" />
@@ -76,7 +77,6 @@
     <Compile Include="Expressions\ThrowExpression.cs" />
     <Compile Include="Expressions\TryCatchFinallyExpression.cs" />
     <Compile Include="Expressions\ValueBlockExpression.cs" />
-    <Compile Include="Expressions\ValueOnStackExpression.cs" />
     <Compile Include="Expressions\ValueTypePointerExpression.cs" />
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
