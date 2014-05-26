@@ -56,7 +56,7 @@ namespace CodeBuilder.Expressions
                 symbolGenerator.Write("return ").Write(_value);
             else
                 symbolGenerator.Write("return");
-            return start.BlockTo(symbolGenerator.WriteStatementEnd(";"));
+            return start.BlockTo(symbolGenerator.Write(";").GetCurrentPosition());
         }
     }
 }

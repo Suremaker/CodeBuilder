@@ -25,7 +25,7 @@ namespace CodeBuilder.Expressions
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
-            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write(_expression).WriteStatementEnd(";"));
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write(_expression).Write(";").GetCurrentPosition());
         }
     }
 }

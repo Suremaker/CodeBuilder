@@ -47,7 +47,8 @@ namespace CodeBuilder.Expressions
             var end = symbolGenerator
                 .Write(string.Format("{0}.{1} = ", (_instance == null) ? _fieldInfo.DeclaringType.FullName : string.Empty, _fieldInfo.Name))
                 .Write(_value)
-                .WriteStatementEnd(";");
+                .Write(";")
+                .GetCurrentPosition();
             return start.BlockTo(end);
         }
     }

@@ -28,7 +28,7 @@ namespace CodeBuilder.Expressions
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
             var start = symbolGenerator.GetCurrentPosition();
-            return start.BlockTo(symbolGenerator.Write(_variable.Name).Write(" = ").Write(_value).WriteStatementEnd(";"));
+            return start.BlockTo(symbolGenerator.Write(_variable.Name).Write(" = ").Write(_value).Write(";").GetCurrentPosition());
         }
 
         internal static void EmitWriteLocal(IBuildContext ctx, LocalBuilder local)

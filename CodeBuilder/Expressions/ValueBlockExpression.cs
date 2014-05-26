@@ -52,7 +52,7 @@ namespace CodeBuilder.Expressions
             for (int index = 0; index < _expressions.Length; index++)
             {
                 if (index + 1 < _expressions.Length)
-                    symbolGenerator.Write(_expressions[index]);
+                    symbolGenerator.Write(_expressions[index]).WriteStatementEnd("");
                 else
                     symbolGenerator.Write("return ").Write(_expressions[index]).Write(";");
             }

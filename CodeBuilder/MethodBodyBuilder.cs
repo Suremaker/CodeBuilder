@@ -80,7 +80,7 @@ namespace CodeBuilder
         {
             var sb = new StringBuilder();
             foreach (var expression in _statements)
-                sb.Append(expression);
+                sb.AppendLine(expression.ToString());
             return sb.ToString();
         }
     }

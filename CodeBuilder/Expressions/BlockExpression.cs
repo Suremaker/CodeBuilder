@@ -35,8 +35,12 @@ namespace CodeBuilder.Expressions
             symbolGenerator.Write("{");
             symbolGenerator.EnterScope();
 
-            foreach (var expression in _expressions)
-                symbolGenerator.Write(expression);
+            for (int index = 0; index < _expressions.Length; index++)
+            {
+                symbolGenerator.Write(_expressions[index]);
+                if (index + 1 < _expressions.Length)
+                    symbolGenerator.WriteStatementEnd("");
+            }
 
             var end = symbolGenerator
                 .LeaveScope()

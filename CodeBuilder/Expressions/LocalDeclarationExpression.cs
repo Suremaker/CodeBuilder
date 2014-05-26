@@ -42,7 +42,7 @@ namespace CodeBuilder.Expressions
             symbolGenerator.Write(string.Format("{0} {1}", _variable.VariableType.FullName, _variable.Name));
             if (_initialValue != null)
                 symbolGenerator.Write(" = ").Write(_initialValue);
-            return start.BlockTo(symbolGenerator.WriteStatementEnd(";"));
+            return start.BlockTo(symbolGenerator.Write(";").GetCurrentPosition());
         }
     }
 }

@@ -22,7 +22,7 @@ namespace CodeBuilder.Expressions
 
         internal override CodeBlock WriteDebugCode(IMethodSymbolGenerator symbolGenerator)
         {
-            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.WriteStatementEnd("continue;"));
+            return symbolGenerator.GetCurrentPosition().BlockTo(symbolGenerator.Write("continue;").GetCurrentPosition());
         }
     }
 }

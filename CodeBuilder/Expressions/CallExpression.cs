@@ -73,7 +73,7 @@ namespace CodeBuilder.Expressions
             }
             symbolGenerator.Write(")");
             if (ExpressionType == typeof(void))
-                return begin.BlockTo(symbolGenerator.WriteStatementEnd(";"));
+                return begin.BlockTo(symbolGenerator.Write(";").GetCurrentPosition());
             return begin.BlockTo(symbolGenerator.GetCurrentPosition());
         }
     }

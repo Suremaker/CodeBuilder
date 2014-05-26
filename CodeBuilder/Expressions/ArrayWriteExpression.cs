@@ -65,7 +65,8 @@ namespace CodeBuilder.Expressions
                 .Write(_index)
                 .Write("] = ")
                 .Write(_value)
-                .WriteStatementEnd(";");
+                .Write(";")
+                .GetCurrentPosition();
             return begin.BlockTo(end);
         }
     }
