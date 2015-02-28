@@ -1,23 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.SymbolStore;
-using System.IO;
 using System.Reflection.Emit;
 using CodeBuilder.Expressions;
 
-namespace CodeBuilder
+namespace CodeBuilder.Symbols
 {
     internal class MethodSymbolGenerator : IMethodSymbolGenerator
     {
-        private int _expressionIds = 0;
+        private int _expressionIds;
         private readonly IDictionary<int, CodeBlock> _debugLocations = new Dictionary<int, CodeBlock>();
         private readonly ISymbolDocumentWriter _symbolWriter;
-        private int _currentColumn;
-        private readonly TextWriter _codeWriter;
-        private int _currentLine = 0;
-        private int _scope = 0;
+        private readonly CodeWriter _codeWriter;
 
-        public MethodSymbolGenerator(ISymbolDocumentWriter symbolWriter, TextWriter codeWriter)
+        public MethodSymbolGenerator(ISymbolDocumentWriter symbolWriter, CodeWriter codeWriter)
         {
             _symbolWriter = symbolWriter;
             _codeWriter = codeWriter;
@@ -38,15 +34,12 @@ namespace CodeBuilder
 
         public CodePosition GetCurrentPosition()
         {
-            return new CodePosition(_currentLine, _currentColumn);
+            return new CodePosition(_codeWriter.CurrentLine, _codeWriter.CurrentColumn);
         }
 
-        public IMethodSymbolGenerator Write(string debugCode)
+        public IMethodSymbolGenerator Write(string code)
         {
-            if (debugCode.Contains("\n") || debugCode.Contains("\r"))
-                throw new ArgumentException("Debug code cannot contain \n or \r characters");
-            _currentColumn += debugCode.Length;
-            _codeWriter.Write(debugCode);
+            _codeWriter.Write(code);
             return this;
         }
 
@@ -54,20 +47,20 @@ namespace CodeBuilder
         {
             Write(statementEnd);
             var pos = GetCurrentPosition();
-            MoveToNewLine();
+            _codeWriter.WriteNewLine();
             return pos;
         }
 
         public IMethodSymbolGenerator EnterScope()
         {
-            ++_scope;
-            return MoveToNewLine();
+            _codeWriter.EnterScope();
+            return this;
         }
 
         public IMethodSymbolGenerator LeaveScope()
         {
-            --_scope;
-            return MoveToNewLine();
+            _codeWriter.LeaveScope();
+            return this;
         }
 
         public IMethodSymbolGenerator WriteNamedBlock(string blockHeader, params Expression[] blockStatements)
@@ -84,16 +77,6 @@ namespace CodeBuilder
                 LeaveScope();
                 WriteStatementEnd("}");
             }
-            return this;
-        }
-
-        private MethodSymbolGenerator MoveToNewLine()
-        {
-            _codeWriter.WriteLine();
-            ++_currentLine;
-            _currentColumn = _scope;
-            for (int i = 0; i < _scope; ++i)
-                _codeWriter.Write('\t');
             return this;
         }
     }

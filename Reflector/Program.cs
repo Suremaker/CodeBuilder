@@ -26,6 +26,7 @@ namespace Reflector
             var s = new MyStruct {MyField = "321"};
             Console.WriteLine(myClass.loadStructField(s));
             Console.WriteLine(myClass.saveStructField(s,"aaa222").MyField);
+            Console.WriteLine(myClass.catchException());
             Console.ReadKey();
             Console.ReadKey();
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Reflection.Emit;
+using CodeBuilder.Builders;
 using CodeBuilder.Expressions;
 
 namespace CodeBuilder.UT
@@ -58,11 +59,10 @@ namespace CodeBuilder.UT
 
         private static Delegate CreateMethod(Type delegateType, Type returnType, Type[] parameterTypes, params Expression[] expressions)
         {
-            var method = new DynamicMethod("testMethod", returnType, parameterTypes, typeof(BuilderTestBase), true);
-            var builder = new MethodBodyBuilder(method, parameterTypes).AddStatements(expressions);
-            Console.WriteLine(builder);
-            builder.Compile();
-            return method.CreateDelegate(delegateType);
+            return MethodCompiler.DefineDynamicMethod("testMethod", returnType, parameterTypes)
+                          .SetBody(expressions)
+                          .Compile(typeof (BuilderTestBase), true)
+                          .CreateDelegate(delegateType);
         }
     }
 }

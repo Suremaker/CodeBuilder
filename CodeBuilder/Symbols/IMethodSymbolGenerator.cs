@@ -1,14 +1,14 @@
-﻿using System.Reflection.Emit;
+using System.Reflection.Emit;
 using CodeBuilder.Expressions;
 
-namespace CodeBuilder
+namespace CodeBuilder.Symbols
 {
     public interface IMethodSymbolGenerator
     {
         void MarkSequencePoint(ILGenerator generator, int expressionId);
         IMethodSymbolGenerator Write(Expression expression);
         CodePosition GetCurrentPosition();
-        IMethodSymbolGenerator Write(string debugCode);
+        IMethodSymbolGenerator Write(string code);
         CodePosition WriteStatementEnd(string statementEnd);
         IMethodSymbolGenerator EnterScope();
         IMethodSymbolGenerator LeaveScope();

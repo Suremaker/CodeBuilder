@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 using CodeBuilder.Expressions;
+using CodeBuilder.Symbols;
 
 namespace CodeBuilder.Context
 {
@@ -126,7 +127,7 @@ namespace CodeBuilder.Context
             foreach (var expression in expressions)
             {
                 if (IsSymbolInfoEnabled)
-                    SymbolGenerator.Write(expression);
+                    SymbolGenerator.Write(expression).WriteStatementEnd("");
                 Compile(expression);
             }
         }

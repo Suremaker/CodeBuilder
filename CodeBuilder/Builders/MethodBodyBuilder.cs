@@ -6,31 +6,55 @@ using System.Text;
 using CodeBuilder.Context;
 using CodeBuilder.Expressions;
 using CodeBuilder.Helpers;
+using CodeBuilder.Symbols;
 
-namespace CodeBuilder
+namespace CodeBuilder.Builders
 {
     public class MethodBodyBuilder
     {
         private readonly List<Expression> _statements = new List<Expression>();
         private readonly BuildContext _ctx;
 
-        public MethodBodyBuilder(MethodBuilder methodBuilder, params Type[] parameters) : this(null, methodBuilder, parameters) { }
-        public MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, MethodBuilder methodBuilder, params Type[] parameters)
+        public static MethodBodyBuilder ForMethod(IMethodSymbolGenerator symbolGenerator, MethodBuilder methodBuilder, params Type[] parameters)
+        {
+            return new MethodBodyBuilder(symbolGenerator, methodBuilder, parameters);
+        }
+
+        public static MethodBodyBuilder ForMethod(MethodBuilder methodBuilder, params Type[] parameters)
+        {
+            return new MethodBodyBuilder(null, methodBuilder, parameters);
+        }
+
+        public static MethodBodyBuilder ForConstructor(IMethodSymbolGenerator symbolGenerator, ConstructorBuilder ctorBuilder, params Type[] parameters)
+        {
+            return new MethodBodyBuilder(symbolGenerator, ctorBuilder, parameters);
+        }
+
+        public static MethodBodyBuilder ForConstructor(ConstructorBuilder ctorBuilder, params Type[] parameters)
+        {
+            return new MethodBodyBuilder(null, ctorBuilder, parameters);
+        }
+
+        public static MethodBodyBuilder ForDynamicMethod(DynamicMethod dynamicMethod, params Type[] parameters)
+        {
+            return new MethodBodyBuilder(dynamicMethod, parameters);
+        }
+
+        private MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, MethodBuilder methodBuilder, params Type[] parameters)
         {
             Validators.NullCheck(methodBuilder, "methodBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
             _ctx = new BuildContext(methodBuilder.GetILGenerator(), methodBuilder.ReturnType, PrepareParameters(methodBuilder, parameters), symbolGenerator);
         }
 
-        public MethodBodyBuilder(ConstructorBuilder ctorBuilder, params Type[] parameters) : this(null, ctorBuilder, parameters) { }
-        public MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, ConstructorBuilder ctorBuilder, params Type[] parameters)
+        private MethodBodyBuilder(IMethodSymbolGenerator symbolGenerator, ConstructorBuilder ctorBuilder, params Type[] parameters)
         {
             Validators.NullCheck(ctorBuilder, "ctorBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
             _ctx = new BuildContext(ctorBuilder.GetILGenerator(), typeof(void), PrepareParameters(ctorBuilder, parameters), symbolGenerator);
         }
 
-        public MethodBodyBuilder(DynamicMethod dynamicMethod, params Type[] parameters)
+        private MethodBodyBuilder(DynamicMethod dynamicMethod, params Type[] parameters)
         {
             Validators.NullCheck(dynamicMethod, "methodBuilder");
             Validators.NullCollectionElementsCheck(parameters, "parameters");
@@ -48,13 +72,11 @@ namespace CodeBuilder
             return result;
         }
 
-        public MethodBodyBuilder AddStatement(Expression expression)
+        private void AddStatement(Expression expression)
         {
             if (expression == null)
                 throw new ArgumentNullException("expression");
-
             _statements.Add(ExprHelper.PopIfNeeded(expression));
-            return this;
         }
 
         public MethodBodyBuilder AddStatements(params Expression[] expressions)

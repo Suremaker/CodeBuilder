@@ -1,4 +1,5 @@
 ﻿using CodeBuilder.Context;
+using CodeBuilder.Symbols;
 
 namespace CodeBuilder.Expressions
 {

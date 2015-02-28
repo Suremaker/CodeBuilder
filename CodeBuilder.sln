@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflector", "Reflector\Refl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBuilder.UT", "CodeBuilder.UT\CodeBuilder.UT.csproj", "{900FC247-1330-4CBA-A1C7-A450993065C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{E6FC84C3-0B03-4E83-92E2-DFB65A6D0287}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{900FC247-1330-4CBA-A1C7-A450993065C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{900FC247-1330-4CBA-A1C7-A450993065C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{900FC247-1330-4CBA-A1C7-A450993065C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6FC84C3-0B03-4E83-92E2-DFB65A6D0287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6FC84C3-0B03-4E83-92E2-DFB65A6D0287}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6FC84C3-0B03-4E83-92E2-DFB65A6D0287}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6FC84C3-0B03-4E83-92E2-DFB65A6D0287}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

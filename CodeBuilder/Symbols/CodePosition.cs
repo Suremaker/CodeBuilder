@@ -1,4 +1,4 @@
-﻿namespace CodeBuilder
+﻿namespace CodeBuilder.Symbols
 {
     public struct CodePosition
     {
@@ -17,18 +17,6 @@
             if (Line < other.Line || (Line == other.Line && Column < other.Column))
                 return new CodeBlock(this, other);
             return new CodeBlock(other, this);
-        }
-    }
-
-    public class CodeBlock
-    {
-        public CodePosition Start { get; private set; }
-        public CodePosition End { get; private set; }
-
-        public CodeBlock(CodePosition start, CodePosition end)
-        {
-            Start = start;
-            End = end;
         }
     }
 }

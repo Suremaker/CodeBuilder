@@ -34,8 +34,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\MethodDefinitionBuilder.cs" />
     <Compile Include="CatchBlock.cs" />
-    <Compile Include="CodePosition.cs" />
     <Compile Include="Context\BuildContext.cs" />
     <Compile Include="Context\IBuildContext.cs" />
     <Compile Include="Context\JumpLabel.cs" />
@@ -81,21 +81,32 @@
     <Compile Include="Expressions\VoidExpression.cs" />
     <Compile Include="Helpers\CollectionHelper.cs" />
     <Compile Include="Helpers\EmitHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\ExprHelper.cs" />
     <Compile Include="Helpers\MemberHelper.cs" />
     <Compile Include="Helpers\StringFormat.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="Expressions\IfThenExpression.cs" />
-    <Compile Include="IMethodSymbolGenerator.cs" />
-    <Compile Include="ISymbolGenerator.cs" />
     <Compile Include="LocalVariable.cs" />
-    <Compile Include="MethodBodyBuilder.cs" />
+    <Compile Include="MethodCompiler.cs" />
     <Compile Include="Expressions\NewExpression.cs" />
     <Compile Include="Expressions\ParameterExpression.cs" />
     <Compile Include="Expressions\PopExpression.cs" />
-    <Compile Include="MethodSymbolGenerator.cs" />
+    <Compile Include="Builders\ConstructorDefinitionBuilder.cs" />
+    <Compile Include="Builders\TypeInitializerDefinitionBuilder.cs" />
+    <Compile Include="Builders\DynamicMethodDefinitionBuilder.cs" />
+    <Compile Include="Builders\MethodBodyBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Expressions\ReturnExpression.cs" />
+    <Compile Include="Symbols\CodeBlock.cs" />
+    <Compile Include="Symbols\CodePosition.cs" />
+    <Compile Include="Symbols\CodeWriter.cs" />
+    <Compile Include="Symbols\IMethodSymbolGenerator.cs" />
+    <Compile Include="Symbols\ISymbolGenerator.cs" />
+    <Compile Include="Symbols\ITypeSymbolGenerator.cs" />
+    <Compile Include="Symbols\MethodSymbolGenerator.cs" />
+    <Compile Include="Symbols\SymbolGenerator.cs" />
+    <Compile Include="Symbols\TypeSymbolGenerator.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

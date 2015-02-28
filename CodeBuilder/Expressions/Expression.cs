@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using CodeBuilder.Context;
+using CodeBuilder.Symbols;
 
 namespace CodeBuilder.Expressions
 {
@@ -19,7 +20,7 @@ namespace CodeBuilder.Expressions
         public override string ToString()
         {
             var builder = new StringBuilder();
-            WriteDebugCode(new MethodSymbolGenerator(null, new StringWriter(builder)));
+            WriteDebugCode(new MethodSymbolGenerator(null, new CodeWriter(new StringWriter(builder))));
             return builder.ToString();
         }
 

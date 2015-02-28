@@ -2,12 +2,12 @@
 using CodeBuilder.Context;
 using CodeBuilder.Expressions;
 using CodeBuilder.Helpers;
+using CodeBuilder.Symbols;
 
 namespace CodeBuilder
 {
     public class CatchBlock
     {
-        private readonly LocalVariable _exceptionVariable;
         private readonly Expression _catchExpression;
         private readonly Expression _preCatchExpression;
         public Type ExceptionType { get; private set; }
@@ -28,7 +28,6 @@ namespace CodeBuilder
             Validators.HierarchyCheck(exceptionType, typeof(Exception), "Provided type {0} has to be deriving from {1}", "exceptionType");
             Validators.HierarchyCheck(exceptionType, exceptionVariable.VariableType, "Unable to assign exception of type {0} to local of type {1}", "exceptionVariable");
             ExceptionType = exceptionType;
-            _exceptionVariable = exceptionVariable;
             _preCatchExpression = new ExceptionCatchInitializerExpression(exceptionType, exceptionVariable, declareVariable);
             _catchExpression = ExprHelper.PopIfNeeded(catchExpression);
         }
